@@ -1,372 +1,466 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>Product Gallery - รายการสินค้า</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        html { -webkit-text-size-adjust: 100%; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh; padding: 30px 16px;
-        }
-        .container { max-width: 1400px; margin: 0 auto; }
-        .header { text-align: center; color: white; margin-bottom: 30px; }
-        .header h1 { font-size: 2.2em; margin-bottom: 8px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
-        .header p { font-size: 1em; opacity: 0.9; }
-        .stats { display: flex; justify-content: center; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
-        .stats span { background: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 20px; font-size: 0.85em; white-space: nowrap; }
-        .category-nav {
-            display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
-            margin-bottom: 30px; padding: 14px; background: rgba(255,255,255,0.15);
-            border-radius: 12px;
-        }
-        .category-nav a {
-            color: white; text-decoration: none; padding: 7px 14px;
-            background: rgba(255,255,255,0.2); border-radius: 16px; font-size: 0.85em;
-            transition: background 0.2s; white-space: nowrap;
-        }
-        .category-nav a:hover, .category-nav a:active { background: rgba(255,255,255,0.4); }
-        .category {
-            margin-bottom: 36px; background: white; border-radius: 12px; overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2); scroll-margin-top: 16px;
-        }
-        .category-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white; padding: 16px 18px; font-size: 1.4em; font-weight: bold;
-            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
-        }
-        .category-header .count { font-size: 0.5em; opacity: 0.85; font-weight: normal; }
-        .products-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 14px; padding: 18px;
-        }
-        .product-card {
-            background: #f8f9fa; border-radius: 8px; overflow: hidden;
-            transition: all 0.2s ease; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            border: none;
-        }
-        .product-card:hover, .product-card:active { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
-        .product-images { position: relative; width: 100%; aspect-ratio: 1 / 1; background: #e9ecef; overflow: hidden; }
-        .product-images img { width: 100%; height: 100%; object-fit: cover; display: none; pointer-events: none; }
-        .product-images img.active { display: block; }
-        .click-hint {
-            position: absolute; top: 6px; right: 6px; background: rgba(0,0,0,0.55); color: white;
-            border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center;
-            justify-content: center; font-size: 14px; pointer-events: none;
-        }
-        .image-nav {
-            position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
-            display: flex; gap: 4px; background: rgba(0,0,0,0.5); padding: 6px 10px; border-radius: 20px;
-            max-width: 90%; overflow: hidden;
-        }
-        .image-nav span {
-            width: 6px; height: 6px; background: rgba(255,255,255,0.5); border-radius: 50%;
-            flex-shrink: 0;
-        }
-        .image-nav span.active { background: white; width: 16px; border-radius: 4px; }
-        .product-info { padding: 10px 12px; }
-        .product-name { font-size: 0.92em; font-weight: 600; color: #333; margin-bottom: 4px; word-break: break-word; line-height: 1.3; }
-        .image-count { color: #667eea; font-size: 0.8em; font-weight: 500; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ร้านวราภรณ์ - รายการสินค้า</title>
+<meta name="description" content="รายการสินค้าร้านวราภรณ์ เสื้อกีฬา เสื้อโปโล เสื้อยืด หมวก และอื่นๆ ทุกยี่ห้อ ดูรูปได้ทุกสี">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1c1e33; --ink-2:#5b5e72; --line:#e6e7ec; --bg:#fff; --soft:#f5f6f8;
+  --accent:#e5262b; --teal:#0f8f8a; --mint:#e1f3f2; --maxw:1225px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{font-family:'Noto Sans Thai','Segoe UI',Tahoma,sans-serif;color:var(--ink);background:var(--bg);line-height:1.45}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+img{display:block}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 16px}
 
-        /* Lightbox modal */
-        .lightbox-overlay {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92);
-            z-index: 1000; flex-direction: column; align-items: center; justify-content: center;
-            padding: 0; touch-action: none;
-        }
-        .lightbox-overlay.open { display: flex; }
-        .lightbox-header {
-            position: absolute; top: 0; left: 0; right: 0; padding: 14px 16px;
-            display: flex; justify-content: space-between; align-items: center;
-            color: white; z-index: 10; background: linear-gradient(rgba(0,0,0,0.6), transparent);
-        }
-        .lightbox-title { font-size: 1em; font-weight: 600; max-width: 75%; }
-        .lightbox-counter { font-size: 0.85em; opacity: 0.85; margin-top: 2px; }
-        .lightbox-close {
-            background: rgba(255,255,255,0.15); border: none; color: white; width: 38px; height: 38px;
-            border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center;
-            justify-content: center; flex-shrink: 0;
-        }
-        .lightbox-close:active { background: rgba(255,255,255,0.3); }
-        .lightbox-main {
-            position: relative; width: 100%; flex: 1; display: flex; align-items: center;
-            justify-content: center; overflow: hidden; min-height: 0;
-        }
-        .lightbox-main img {
-            max-width: 94%; max-height: 100%; object-fit: contain; -webkit-user-select: none; user-select: none;
-        }
-        .lightbox-arrow {
-            position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.15);
-            border: none; color: white; width: 44px; height: 44px; border-radius: 50%; font-size: 22px;
-            cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 5;
-        }
-        .lightbox-arrow:active { background: rgba(255,255,255,0.3); }
-        .lightbox-arrow.prev { left: 10px; }
-        .lightbox-arrow.next { right: 10px; }
-        .lightbox-thumbs {
-            display: flex; gap: 8px; padding: 12px 14px; overflow-x: auto; width: 100%;
-            -webkit-overflow-scrolling: touch; scrollbar-width: thin;
-        }
-        .lightbox-thumbs img {
-            width: 54px; height: 54px; object-fit: cover; border-radius: 6px; opacity: 0.55;
-            border: 2px solid transparent; flex-shrink: 0; cursor: pointer;
-        }
-        .lightbox-thumbs img.active { opacity: 1; border-color: #6ee7d8; }
-        body.modal-open { overflow: hidden; }
+/* ---------- Top bar ---------- */
+.topbar{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1400px;margin:0 auto;height:57px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 20px;gap:12px}
+.tb-left{display:flex;align-items:center;gap:26px}
+.icon-btn{width:38px;height:38px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center}
+.icon-btn:hover{background:var(--soft)}
+.icon-btn svg{width:22px;height:22px;stroke:var(--ink);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.toptabs{display:flex;gap:26px;height:57px}
+.toptabs button{font-weight:700;font-size:15px;letter-spacing:.3px;height:100%;border-bottom:3px solid transparent;color:var(--ink-2);padding:3px 2px 0}
+.toptabs button.on{color:var(--ink);border-bottom-color:var(--accent)}
+.logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:20px;color:var(--accent);letter-spacing:.2px;white-space:nowrap}
+.logo i{font-style:normal;background:var(--accent);color:#fff;width:32px;height:32px;border-radius:9px 9px 9px 3px;display:inline-flex;align-items:center;justify-content:center;font-size:17px}
+.tb-right{display:flex;justify-content:flex-end}
+.search{display:flex;align-items:center;gap:6px;height:38px;width:min(100%,228px);border:1px solid #c9cad3;border-radius:20px;padding:0 6px 0 14px;background:#fff}
+.search:focus-within{border-color:var(--ink)}
+.search input{flex:1;min-width:0;border:0;outline:0;font:inherit;font-size:13.5px;background:transparent;color:var(--ink)}
+.search .icon-btn{width:28px;height:28px}
+.search .icon-btn svg{width:18px;height:18px}
 
-        @media (max-width: 640px) {
-            body { padding: 16px 10px; }
-            .header h1 { font-size: 1.5em; }
-            .header p { font-size: 0.85em; }
-            .stats span { font-size: 0.75em; padding: 5px 10px; }
-            .category-nav { gap: 6px; padding: 10px; margin-bottom: 20px; }
-            .category-nav a { font-size: 0.78em; padding: 6px 11px; }
-            .category-header { font-size: 1.1em; padding: 12px 14px; }
-            .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 12px; }
-            .product-name { font-size: 0.82em; }
-            .image-count { font-size: 0.72em; }
-            .lightbox-arrow { width: 38px; height: 38px; font-size: 18px; }
-            .lightbox-thumbs img { width: 44px; height: 44px; }
-            .lightbox-title { font-size: 0.88em; }
-        }
-        @media (min-width: 641px) and (max-width: 1024px) {
-            .products-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
-        }
-        .sub-nav { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 18px; background: #f1f3ff; border-bottom: 1px solid #e3e6f5; }
-        .sub-nav a { color: #4b4fb3; text-decoration: none; background: white; border: 1px solid #c9ccef; padding: 6px 14px; border-radius: 16px; font-size: 0.85em; font-weight: 600; white-space: nowrap; }
-        .sub-nav a:hover, .sub-nav a:active { background: #e3e6ff; }
-        .sub-header { margin: 8px 18px 0; padding: 10px 14px; border-left: 5px solid #764ba2; background: #f6f2fb; color: #4a2d6b; font-size: 1.05em; font-weight: 700; display: flex; justify-content: space-between; align-items: center; border-radius: 0 8px 8px 0; scroll-margin-top: 12px; }
-        .sub-header .count { font-size: 0.8em; font-weight: 500; opacity: 0.75; }
-        @media (max-width: 640px) { .sub-nav { padding: 10px 12px; } .sub-header { margin: 6px 12px 0; font-size: 0.95em; } }
-        .footer { text-align: center; color: white; margin-top: 40px; padding: 16px; opacity: 0.8; font-size: 0.9em; }
-    </style>
+/* ---------- Brand strip ---------- */
+.brandbar{border-bottom:1px solid var(--line);background:#fff}
+.brandbar-in{max-width:var(--maxw);margin:0 auto;display:flex;gap:8px;overflow-x:auto;padding:12px 16px;scrollbar-width:none}
+.brandbar-in::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;border:1px solid var(--line);border-radius:20px;padding:6px 16px;font-size:13.5px;font-weight:500;background:#fff;white-space:nowrap;transition:.15s}
+.chip:hover{border-color:var(--ink)}
+.chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.chip small{opacity:.6;font-size:11.5px;margin-left:3px}
+
+/* ---------- Drawer ---------- */
+.scrim{position:fixed;inset:0;background:rgba(10,12,30,.45);z-index:90;opacity:0;pointer-events:none;transition:.2s}
+.scrim.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;bottom:0;left:0;width:min(86vw,320px);background:#fff;z-index:95;transform:translateX(-102%);transition:transform .25s;display:flex;flex-direction:column}
+.drawer.open{transform:none}
+.drawer-h{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.drawer-list{overflow-y:auto;flex:1}
+.drawer-list button{display:flex;justify-content:space-between;width:100%;padding:14px 20px;border-bottom:1px solid var(--soft);font-size:15px;text-align:left}
+.drawer-list button:hover,.drawer-list button.on{background:var(--soft)}
+.drawer-list button.on{font-weight:700;box-shadow:inset 3px 0 var(--accent)}
+.drawer-list em{font-style:normal;color:var(--ink-2);font-size:13px}
+
+/* ---------- Hero ---------- */
+.hero{max-width:var(--maxw);margin:0 auto;padding:0 16px}
+.hero-view{position:relative;overflow:hidden;margin-top:14px}
+.hero-track{display:flex;transition:transform .5s ease}
+.slide{flex:0 0 100%;display:grid;grid-template-columns:38% 1fr;height:420px;border:1px solid #1c1e33}
+.slide-big{position:relative;overflow:hidden;border-right:1px solid #1c1e33;cursor:pointer;background:var(--soft)}
+.slide-big img{width:100%;height:100%;object-fit:cover;object-position:top}
+.slide-body{display:flex;flex-direction:column;background:#fff;min-width:0}
+.slide-title{text-align:center;font-size:27px;font-weight:600;letter-spacing:.5px;padding:20px 12px 14px;cursor:pointer}
+.slide-thumbs{flex:1;display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid #1c1e33;border-bottom:1px solid #1c1e33;min-height:0}
+.slide-thumbs a{border-right:1px solid #1c1e33;overflow:hidden;cursor:pointer;background:var(--soft);position:relative}
+.slide-thumbs a:last-child{border-right:0}
+.slide-thumbs img{width:100%;height:100%;object-fit:cover;object-position:top;transition:transform .3s}
+.slide-thumbs a:hover img{transform:scale(1.04)}
+.slide-sub{text-align:center;font-size:17px;font-weight:500;padding:14px 12px;letter-spacing:.4px}
+.hero-arrow{position:absolute;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.9);box-shadow:0 1px 6px rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;z-index:3;font-size:15px}
+.hero-arrow.l{left:10px}.hero-arrow.r{right:10px}
+.dots{display:flex;justify-content:center;gap:9px;padding:14px 0 12px}
+.dots button{width:9px;height:9px;border-radius:50%;background:#d6d8de;padding:0}
+.dots button.on{background:var(--teal)}
+
+/* ---------- Highlight strip ---------- */
+.perks{background:var(--mint);margin:2px auto 0;width:calc(100% - 32px);max-width:calc(var(--maxw) - 32px)}
+.perks-in{display:grid;grid-template-columns:repeat(3,1fr);padding:14px 0}
+.perk{display:flex;align-items:center;justify-content:center;gap:14px;font-weight:600;font-size:15px;line-height:1.3;text-align:left}
+.perk b{display:block;font-size:20px;color:var(--teal);line-height:1.1}
+.perk svg{width:38px;height:38px;stroke:var(--ink);fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
+
+/* ---------- Sections ---------- */
+.sec{max-width:var(--maxw);margin:0 auto;padding:36px 16px 6px;scroll-margin-top:70px}
+.sec-h{text-align:center;margin-bottom:20px}
+.sec-h h2{font-size:22px;font-weight:700;letter-spacing:.6px;color:#25283d}
+.sec-h p{font-size:13.5px;color:var(--ink-2);margin-top:2px}
+.sec-h a.all{display:inline-block;margin-top:6px;font-size:13.5px;font-weight:600;color:var(--accent);border-bottom:1px solid var(--accent)}
+.subnav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0 4px}
+.subhead{display:flex;align-items:baseline;gap:10px;margin:22px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--line);scroll-margin-top:70px}
+.subhead h3{font-size:16.5px;font-weight:700}
+.subhead span{font-size:13px;color:var(--ink-2)}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px 14px}
+
+.card{cursor:pointer;display:block;text-align:left;width:100%}
+.card-img{position:relative;aspect-ratio:3/4;background:var(--soft);overflow:hidden}
+.card-img img{width:100%;height:100%;object-fit:cover;object-position:top;transition:transform .35s}
+.card:hover .card-img img{transform:scale(1.04)}
+.tag{position:absolute;left:0;top:14px;background:rgba(255,255,255,.92);font-size:11px;font-weight:600;letter-spacing:.4px;padding:3px 9px 3px 8px;border-left:3px solid var(--ink);text-transform:uppercase}
+.cnt{position:absolute;right:8px;bottom:8px;background:rgba(28,30,51,.82);color:#fff;font-size:11.5px;font-weight:500;padding:3px 9px;border-radius:12px}
+.card-info{padding:9px 2px 0}
+.card-brand{font-size:11.5px;font-weight:600;color:var(--ink-2);letter-spacing:.5px;text-transform:uppercase}
+.card-name{font-size:14.5px;font-weight:600;line-height:1.35;margin-top:1px;word-break:break-word}
+.card-meta{font-size:12.5px;color:var(--teal);margin-top:2px}
+
+/* horizontal rail */
+.rail-wrap{position:relative}
+.rail{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;scroll-behavior:smooth}
+.rail::-webkit-scrollbar{display:none}
+.rail .card{flex:0 0 calc((100% - 42px)/4);scroll-snap-align:start}
+.rail-arrow{position:absolute;top:calc(50% - 40px);width:34px;height:34px;border-radius:50%;background:#fff;box-shadow:0 1px 8px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;z-index:3}
+.rail-arrow.l{left:-10px}.rail-arrow.r{right:-10px}
+
+.empty{text-align:center;padding:70px 10px;color:var(--ink-2)}
+.empty b{display:block;font-size:18px;color:var(--ink);margin-bottom:6px}
+
+/* ---------- Footer ---------- */
+.foot{background:#1c1e33;color:#cfd1de;margin-top:56px;padding:34px 16px 28px;text-align:center}
+.foot .logo{justify-content:center;color:#fff;font-size:21px;margin-bottom:8px}
+.foot p{font-size:13.5px;opacity:.85}
+.foot .copy{margin-top:16px;font-size:12px;opacity:.55}
+
+/* ---------- Lightbox ---------- */
+.lightbox-overlay{display:none;position:fixed;inset:0;background:rgba(10,12,28,.94);z-index:1000;flex-direction:column;align-items:center;justify-content:center;touch-action:none}
+.lightbox-overlay.open{display:flex}
+.lightbox-header{position:absolute;top:0;left:0;right:0;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;color:#fff;z-index:10;background:linear-gradient(rgba(0,0,0,.6),transparent)}
+.lightbox-title{font-size:1em;font-weight:600;max-width:75%}
+.lightbox-counter{font-size:.85em;opacity:.85;margin-top:2px}
+.lightbox-close{background:rgba(255,255,255,.15);color:#fff;width:38px;height:38px;border-radius:50%;font-size:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.lightbox-main{position:relative;width:100%;flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:0}
+.lightbox-main img{max-width:94%;max-height:100%;object-fit:contain;user-select:none;-webkit-user-select:none}
+.lightbox-arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);color:#fff;width:44px;height:44px;border-radius:50%;font-size:22px;display:flex;align-items:center;justify-content:center;z-index:5}
+.lightbox-arrow.prev{left:10px}.lightbox-arrow.next{right:10px}
+.lightbox-thumbs{display:flex;gap:8px;padding:12px 14px;overflow-x:auto;width:100%;scrollbar-width:thin}
+.lightbox-thumbs img{width:54px;height:54px;object-fit:cover;border-radius:4px;opacity:.55;border:2px solid transparent;flex-shrink:0;cursor:pointer}
+.lightbox-thumbs img.active{opacity:1;border-color:#fff}
+body.modal-open{overflow:hidden}
+
+/* ---------- Responsive ---------- */
+@media (max-width:1024px){
+  .grid{grid-template-columns:repeat(3,1fr)}
+  .rail .card{flex-basis:calc((100% - 28px)/3)}
+  .slide{height:360px}
+}
+@media (max-width:720px){
+  .topbar-in{height:auto;grid-template-columns:auto 1fr auto;grid-template-areas:"l logo r" "s s s";padding:8px 10px 10px;gap:6px 6px}
+  .tb-left{grid-area:l}.toptabs{display:none}
+  .logo{grid-area:logo;justify-content:center;font-size:18px}
+  .tb-right{grid-area:s;justify-content:stretch}
+  .search{width:100%}
+  .tb-right-spacer{grid-area:r;width:38px}
+  .hero{padding:0 10px}
+  .slide{grid-template-columns:1fr;grid-template-rows:auto auto;height:auto}
+  .slide-big{display:none}
+  .slide-title{font-size:20px;padding:14px 10px 10px}
+  .slide-thumbs{height:230px;flex:none}
+  .slide-sub{font-size:14px;padding:10px}
+  .hero-arrow{display:none}
+  .perks{width:calc(100% - 20px)}
+  .perks-in{grid-template-columns:1fr;gap:10px;padding:14px 18px}
+  .perk{justify-content:flex-start;font-size:14px}
+  .perk svg{width:30px;height:30px}
+  .perk b{font-size:17px}
+  .sec{padding:28px 10px 4px}
+  .sec-h h2{font-size:19px}
+  .grid{grid-template-columns:repeat(2,1fr);gap:18px 10px}
+  .rail{gap:10px}
+  .rail .card{flex-basis:calc((100% - 10px)/2.15)}
+  .rail-arrow{display:none}
+  .card-name{font-size:13.5px}
+  .lightbox-arrow{width:38px;height:38px;font-size:18px}
+  .lightbox-thumbs img{width:44px;height:44px}
+  .lightbox-title{font-size:.88em}
+}
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Product Gallery</h1>
-            <p>รายการสินค้าทั้งหมด - ทุกยี่ห้อ ทุกประเภท</p>
-            <div class="stats" id="stats"></div>
-        </div>
-        <div class="category-nav" id="categoryNav"></div>
-        <div id="gallery"></div>
-        <div class="footer"><p>แตะที่สินค้าเพื่อดูรูปทุกสี/แบบ | Tap a product to view all colors</p></div>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="tb-left">
+      <button class="icon-btn" id="menuBtn" aria-label="เมนูยี่ห้อ"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <nav class="toptabs">
+        <button class="on" data-tab="all">ทั้งหมด</button>
+        <button data-tab="brands">ยี่ห้อสินค้า</button>
+      </nav>
     </div>
-
-    <div class="lightbox-overlay" id="lightbox">
-        <div class="lightbox-header">
-            <div>
-                <div class="lightbox-title" id="lbTitle"></div>
-                <div class="lightbox-counter" id="lbCounter"></div>
-            </div>
-            <button class="lightbox-close" id="lbClose" aria-label="Close">&times;</button>
-        </div>
-        <div class="lightbox-main" id="lbMain">
-            <button class="lightbox-arrow prev" id="lbPrev" aria-label="Previous">&#10094;</button>
-            <img id="lbImage" src="" alt="">
-            <button class="lightbox-arrow next" id="lbNext" aria-label="Next">&#10095;</button>
-        </div>
-        <div class="lightbox-thumbs" id="lbThumbs"></div>
+    <a class="logo" href="#" id="logo" aria-label="ร้านวราภรณ์"><i>ว</i><span>ร้านวราภรณ์</span></a>
+    <div class="tb-right">
+      <label class="search">
+        <input id="q" type="search" placeholder="ค้นหาสินค้า หรือยี่ห้อ" autocomplete="off">
+        <span class="icon-btn"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></span>
+      </label>
     </div>
+    <span class="tb-right-spacer"></span>
+  </div>
+</header>
+<div class="brandbar"><div class="brandbar-in" id="brandChips"></div></div>
 
-    <script>
-        const galleryData = {"Abba": {"แขนยาว BM-7": {"path": "Abba/แขนยาว BM-7", "images": ["1.jpg", "10.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "7.jpg", "8.jpg", "9.jpg"]}, "แขนสั่น unlimited Y1": {"path": "Abba/แขนสั่น unlimited Y1", "images": ["1.jpg", "10.jpg", "11.jpg", "12.jpg", "13.jpg", "14.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "7.jpg", "8.jpg", "9.jpg"]}, "แขนสั้น BM-7": {"path": "Abba/แขนสั้น BM-7", "images": ["1.jpg", "10.JPG", "11.JPG", "12.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "576670707_1268030435340402_6150432869715891722_n.jpg", "6.JPG", "7.JPG", "8.JPG", "9.JPG"]}, "แขนสั้น BM-8": {"path": "Abba/แขนสั้น BM-8", "images": ["1378833.jpg"]}, "X1 เม็ดข้าวโพด": {"path": "Abba/X1 เม็ดข้าวโพด", "images": ["1.jpg", "10.jpg", "11.jpg", "12.jpg", "13.jpg", "14.jpg", "15.jpg", "16.jpg", "17.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "7.jpg", "8.jpg", "9.jpg"]}}, "BCS": {"แจ็กแก็ต_คอจีน T41": {"path": "BCS/แจ็กแก็ต_คอจีน T41", "images": ["BLINE_ALBUM_เสื้อแจ็คเก็ต คอจีนหลิบทอสีพื้น รหัส T41.jpg", "CBLINE_ALBUM_เสื้อแจ็คเก็ต คอจีนหลิบทอสีพื้น รหัส T41.jpg", "DLINE_ALBUM_เสื้อแจ็คเก็ต คอจีนหลิบทอสีพื้น รหัส T41.jpg", "ELINE_ALBUM_เสื้อแจ็คเก็ต คอจีนหลิบทอสีพื้น รหัส T41.jpg", "FLINE_ALBUM_เสื้อแจ็คเก็ต คอจีนหลิบทอสีพื้น รหัส T41.jpg", "GLINE_ALBUM_เสื้อแจ็คเก็ต คอจีนหลิบทอสีพื้น รหัส T41.jpg", "HLINE_ALBUM_เสื้อแจ็คเก็ต คอจีนหลิบทอสีพื้น รหัส T41.jpg", "LINE_ALBUM_เสื้อแจ็คเก็ต คอจีนหลิบทอสีพื้น รหัส T41.jpg"]}}, "CPU": {"แขนสั้น / Titan Zone คอปกวี": {"path": "CPU/แขนสั้น/Titan Zone คอปกวี", "images": ["เสื้อกีฬาแขนสั้น_สีชมพู.jpg", "เสื้อกีฬาแขนสั้น_สีน้ำตาล.jpg", "เสื้อกีฬาแขนสั้น_สีฟ้า.jpg", "เสื้อกีฬาแขนสั้น_สีม่วง.jpg", "เสื้อกีฬาแขนสั้น_สีรุ้ง.jpg", "เสื้อกีฬาแขนสั้น_สีเขียว.jpg", "เสื้อกีฬาแขนสั้น_สีเทา.jpg", "เสื้อกีฬาแขนสั้น_สีเรนโบว์.jpg", "เสื้อกีฬาแขนสั้น_สีโอรสชมพู.jpg", "เสื้อกีฬาแขนสั้น_สีโอรสล้ม.jpg", "เสื้อกีฬาแขนสั้น_รูป Presentation 2.jpg"]}, "แขนสั้น / K11": {"path": "CPU/แขนสั้น/K11", "images": ["เสื้อกีฬาแขนสั้น_สีขาว.jpg", "เสื้อกีฬาแขนสั้น_สีชมพู.jpg", "เสื้อกีฬาแขนสั้น_สีดำ.jpg", "เสื้อกีฬาแขนสั้น_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนสั้น_สีฟ้า.jpg", "เสื้อกีฬาแขนสั้น_สีม่วง.jpg", "เสื้อกีฬาแขนสั้น_สีส้ม.jpg", "เสื้อกีฬาแขนสั้น_สีเขียว.jpg", "เสื้อกีฬาแขนสั้น_สีเหลือง.jpg", "เสื้อกีฬาแขนสั้น_สีแดง.jpg"]}, "แขนสั้น / 126": {"path": "CPU/แขนสั้น/126", "images": ["เสื้อกีฬาแขนสั้น_รวมสี_126.jpg", "เสื้อกีฬาแขนสั้น_สีขาว (2).jpg", "เสื้อกีฬาแขนสั้น_สีขาว.jpg", "เสื้อกีฬาแขนสั้น_สีชมพู.jpg", "เสื้อกีฬาแขนสั้น_สีดำ.jpg", "เสื้อกีฬาแขนสั้น_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนสั้น_สีฟ้า.jpg", "เสื้อกีฬาแขนสั้น_สีม่วง.jpg", "เสื้อกีฬาแขนสั้น_สีส้ม.jpg", "เสื้อกีฬาแขนสั้น_สีเขียว.jpg", "เสื้อกีฬาแขนสั้น_สีเหลือง.jpg", "เสื้อกีฬาแขนสั้น_สีแดง.jpg"]}, "แขนสั้น / 124": {"path": "CPU/แขนสั้น/124", "images": ["เสื้อกีฬาแขนสั้น_รวมสี_124.jpg", "เสื้อกีฬาแขนสั้น_สีขาว.jpg", "เสื้อกีฬาแขนสั้น_สีชมพู.jpg", "เสื้อกีฬาแขนสั้น_สีดำ.jpg", "เสื้อกีฬาแขนสั้น_สีน้ำเงินเข้ม.jpg", "เสื้อกีฬาแขนสั้น_สีฟ้า.jpg", "เสื้อกีฬาแขนสั้น_สีม่วง.jpg", "เสื้อกีฬาแขนสั้น_สีส้ม.jpg", "เสื้อกีฬาแขนสั้น_สีเขียว.jpg", "เสื้อกีฬาแขนสั้น_สีเหลือง.jpg", "เสื้อกีฬาแขนสั้น_สีแดง.jpg"]}, "แขนสั้น / 125": {"path": "CPU/แขนสั้น/125", "images": ["เสื้อกีฬาแขนสั้น_รวมสี.jpg", "เสื้อกีฬาแขนสั้น_สีขาว.jpg", "เสื้อกีฬาแขนสั้น_สีชมพู.jpg", "เสื้อกีฬาแขนสั้น_สีดำ.jpg", "เสื้อกีฬาแขนสั้น_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนสั้น_สีฟ้า.jpg", "เสื้อกีฬาแขนสั้น_สีม่วง.jpg", "เสื้อกีฬาแขนสั้น_สีส้ม.jpg", "เสื้อกีฬาแขนสั้น_สีเขียว.jpg", "เสื้อกีฬาแขนสั้น_สีเหลือง.jpg", "เสื้อกีฬาแขนสั้น_สีแดง.jpg"]}, "แขนสั้น / K12": {"path": "CPU/แขนสั้น/K12", "images": ["เสื้อกีฬาแขนสั้น_สีขาว.jpg", "เสื้อกีฬาแขนสั้น_สีชมพู.jpg", "เสื้อกีฬาแขนสั้น_สีดำ.jpg", "เสื้อกีฬาแขนสั้น_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนสั้น_สีฟ้า.jpg", "เสื้อกีฬาแขนสั้น_สีม่วง.jpg", "เสื้อกีฬาแขนสั้น_สีส้ม.jpg", "เสื้อกีฬาแขนสั้น_สีเขียว.jpg", "เสื้อกีฬาแขนสั้น_สีเหลือง.jpg", "เสื้อกีฬาแขนสั้น_สีแดง.jpg"]}, "แขนสั้น / Titan Xone คอ 5 เหลี่ยม": {"path": "CPU/แขนสั้น/Titan Xone คอ 5 เหลี่ยม", "images": ["เสื้อกีฬาแขนสั้น_รูป Presentation.jpg", "เสื้อกีฬาแขนสั้น_สีขาว.jpg", "เสื้อกีฬาแขนสั้น_สีครีม.jpg", "เสื้อกีฬาแขนสั้น_สีชมพู.jpg", "เสื้อกีฬาแขนสั้น_สีชมพูอ่อน.jpg", "เสื้อกีฬาแขนสั้น_สีฟ้า.jpg", "เสื้อกีฬาแขนสั้น_สีม่วง.jpg", "เสื้อกีฬาแขนสั้น_สีส้ม.jpg", "เสื้อกีฬาแขนสั้น_สีเขียว.jpg", "เสื้อกีฬาแขนสั้น_สีเขียวมิ้น.jpg", "เสื้อกีฬาแขนสั้น_สีเทา.jpg", "เสื้อกีฬาแขนสั้น_สีเหลือง.jpg", "เสื้อกีฬาแขนสั้น_สีแดง.jpg", "เสื้อกีฬาแขนสั้น_สีโอรสชมพู.jpg", "เสื้อกีฬาแขนสั้น_สีโอรสส้ม.jpg"]}, "แขนสั้น / โครตถูก 8": {"path": "CPU/แขนสั้น/โครตถูก 8", "images": ["เสื้อกีฬาแขนสั้น_รูป Presentation.jpg", "เสื้อกีฬาแขนสั้น_สีขาว.jpg", "เสื้อกีฬาแขนสั้น_สีชมพู.jpg", "เสื้อกีฬาแขนสั้น_สีดำ.jpg", "เสื้อกีฬาแขนสั้น_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนสั้น_สีฟ้า.jpg", "เสื้อกีฬาแขนสั้น_สีม่วง.jpg", "เสื้อกีฬาแขนสั้น_สีส้ม.jpg", "เสื้อกีฬาแขนสั้น_สีเขียว.jpg", "เสื้อกีฬาแขนสั้น_สีเหลือง.jpg", "เสื้อกีฬาแขนสั้น_สีแดง.jpg"]}, "แขนสั้น / โครตถูก 9": {"path": "CPU/แขนสั้น/โครตถูก 9", "images": ["เสื้อกีฬาแขนสั้น_รูป Presentation.jpg", "เสื้อกีฬาแขนสั้น_สีขาว.jpg", "เสื้อกีฬาแขนสั้น_สีชมพู.jpg", "เสื้อกีฬาแขนสั้น_สีดำ.jpg", "เสื้อกีฬาแขนสั้น_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนสั้น_สีฟ้า.jpg", "เสื้อกีฬาแขนสั้น_สีม่วง.jpg", "เสื้อกีฬาแขนสั้น_สีส้ม.jpg", "เสื้อกีฬาแขนสั้น_สีเขียว.jpg", "เสื้อกีฬาแขนสั้น_สีเหลือง.jpg", "เสื้อกีฬาแขนสั้น_สีแดง.jpg", "เสื้อกีฬาแขนสั้น_สีขาว 2.jpg", "เสื้อกีฬาแขนสั้น_สีชมพู 2.jpg", "เสื้อกีฬาแขนสั้น_สีดำ 2.jpg", "เสื้อกีฬาแขนสั้น_สีน้ำเงิน 2.jpg", "เสื้อกีฬาแขนสั้น_สีฟ้า 2.jpg", "เสื้อกีฬาแขนสั้น_สีม่วง 2.jpg", "เสื้อกีฬาแขนสั้น_สีส้ม 2.jpg", "เสื้อกีฬาแขนสั้น_สีเขียว 2.jpg", "เสื้อกีฬาแขนสั้น_สีเหลือง 2.jpg", "เสื้อกีฬาแขนสั้น_สีแดง 2.jpg"]}, "แขนยาว / 124": {"path": "CPU/แขนยาว/124", "images": ["เสื้อกีฬาแขนยาว_รูป Presentation.jpg", "เสื้อกีฬาแขนยาว_สีขาว.jpg", "เสื้อกีฬาแขนยาว_สีชมพู.jpg", "เสื้อกีฬาแขนยาว_สีดำ.jpg", "เสื้อกีฬาแขนยาว_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนยาว_สีส้ม.jpg", "เสื้อกีฬาแขนยาว_สีเขียว.jpg", "เสื้อกีฬาแขนยาว_สีเหลือง.jpg", "เสื้อกีฬาแขนยาว_สีแดง.jpg"]}, "แขนยาว / 125": {"path": "CPU/แขนยาว/125", "images": ["เสื้อกีฬาแขนยาว_รูป Presentation.jpg", "เสื้อกีฬาแขนยาว_สีขาว.jpg", "เสื้อกีฬาแขนยาว_สีชมพู.jpg", "เสื้อกีฬาแขนยาว_สีดำ.jpg", "เสื้อกีฬาแขนยาว_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนยาว_สีฟ้า.jpg", "เสื้อกีฬาแขนยาว_สีม่วง.jpg", "เสื้อกีฬาแขนยาว_สีส้ม.jpg", "เสื้อกีฬาแขนยาว_สีเขียว.jpg", "เสื้อกีฬาแขนยาว_สีเหลือง.jpg", "เสื้อกีฬาแขนยาว_สีแดง.jpg"]}, "แขนยาว / K11": {"path": "CPU/แขนยาว/K11", "images": ["เสื้อกีฬาแขนยาว_รูป Presentation.jpg", "เสื้อกีฬาแขนยาว_สีขาว.jpg", "เสื้อกีฬาแขนยาว_สีชมพู.jpg", "เสื้อกีฬาแขนยาว_สีดำ.jpg", "เสื้อกีฬาแขนยาว_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนยาว_สีฟ้า.jpg", "เสื้อกีฬาแขนยาว_สีม่วง.jpg", "เสื้อกีฬาแขนยาว_สีส้ม.jpg", "เสื้อกีฬาแขนยาว_สีเขียว.jpg", "เสื้อกีฬาแขนยาว_สีเหลือง.jpg", "เสื้อกีฬาแขนยาว_สีแดง.jpg"]}, "แขนยาว / K12": {"path": "CPU/แขนยาว/K12", "images": ["เสื้อกีฬาแขนยาว_สีขาว.jpg", "เสื้อกีฬาแขนยาว_สีชมพู.jpg", "เสื้อกีฬาแขนยาว_สีดำ.jpg", "เสื้อกีฬาแขนยาว_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนยาว_สีฟ้า.jpg", "เสื้อกีฬาแขนยาว_สีม่วง.jpg", "เสื้อกีฬาแขนยาว_สีส้ม.jpg", "เสื้อกีฬาแขนยาว_สีเขียว.jpg", "เสื้อกีฬาแขนยาว_สีเหลือง.jpg", "เสื้อกีฬาแขนยาว_สีแดง.jpg"]}, "แขนยาว / โครตถูก7": {"path": "CPU/แขนยาว/โครตถูก7", "images": ["เสื้อกีฬาแขนยาว_รูป Presentation.jpg", "เสื้อกีฬาแขนยาว_สีขาว.jpg", "เสื้อกีฬาแขนยาว_สีชมพู.jpg", "เสื้อกีฬาแขนยาว_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนยาว_สีฟ้า.jpg", "เสื้อกีฬาแขนยาว_สีม่วง.jpg", "เสื้อกีฬาแขนยาว_สีส้ม.jpg", "เสื้อกีฬาแขนยาว_สีเขียว.jpg", "เสื้อกีฬาแขนยาว_สีเหลือง.jpg", "เสื้อกีฬาแขนยาว_สีแดง.jpg"]}, "แขนยาว / โครตถูก8": {"path": "CPU/แขนยาว/โครตถูก8", "images": ["เสื้อกีฬาแขนยาว_รูป Presentation.jpg", "เสื้อกีฬาแขนยาว_สีขาว.jpg", "เสื้อกีฬาแขนยาว_สีชมพู.jpg", "เสื้อกีฬาแขนยาว_สีดำ.jpg", "เสื้อกีฬาแขนยาว_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนยาว_สีฟ้า.jpg", "เสื้อกีฬาแขนยาว_สีม่วง.jpg", "เสื้อกีฬาแขนยาว_สีส้ม.jpg", "เสื้อกีฬาแขนยาว_สีเขียว.jpg", "เสื้อกีฬาแขนยาว_สีเหลือง.jpg", "เสื้อกีฬาแขนยาว_สีแดง.jpg"]}, "แขนกุด / 125": {"path": "CPU/แขนกุด/125", "images": ["เสื้อกีฬาแขนกุด_รูป Presentation.jpg", "เสื้อกีฬาแขนกุด_สีขาว.jpg", "เสื้อกีฬาแขนกุด_สีชมพู.jpg", "เสื้อกีฬาแขนกุด_สีดำ.jpg", "เสื้อกีฬาแขนกุด_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนกุด_สีฟ้า.jpg", "เสื้อกีฬาแขนกุด_สีม่วง.jpg", "เสื้อกีฬาแขนกุด_สีส้ม.jpg", "เสื้อกีฬาแขนกุด_สีเขียว.jpg", "เสื้อกีฬาแขนกุด_สีเหลือง.jpg", "เสื้อกีฬาแขนกุด_สีแดง.jpg"]}, "แขนกุด / K10": {"path": "CPU/แขนกุด/K10", "images": ["เสื้อกีฬาแขนกุด_รูป Presentation.jpg", "เสื้อกีฬาแขนกุด_สีชมพู.jpg", "เสื้อกีฬาแขนกุด_สีดำ.jpg", "เสื้อกีฬาแขนกุด_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนกุด_สีฟ้า.jpg", "เสื้อกีฬาแขนกุด_สีม่วง.jpg", "เสื้อกีฬาแขนกุด_สีส้ม.jpg", "เสื้อกีฬาแขนกุด_สีเขียว.jpg", "เสื้อกีฬาแขนกุด_สีเหลือง.jpg", "เสื้อกีฬาแขนกุด_สีแดง.jpg"]}, "แขนกุด / K12": {"path": "CPU/แขนกุด/K12", "images": ["เสื้อกีฬาแขนกุด_รูป Presentation.jpg", "เสื้อกีฬาแขนกุด_สีขาว.jpg", "เสื้อกีฬาแขนกุด_สีชมพู.jpg", "เสื้อกีฬาแขนกุด_สีดำ.jpg", "เสื้อกีฬาแขนกุด_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนกุด_สีฟ้า.jpg", "เสื้อกีฬาแขนกุด_สีม่วง.jpg", "เสื้อกีฬาแขนกุด_สีส้ม.jpg", "เสื้อกีฬาแขนกุด_สีเขียว.jpg", "เสื้อกีฬาแขนกุด_สีเหลือง.jpg", "เสื้อกีฬาแขนกุด_สีแดง.jpg", "เสื้อกีฬาแขนกุด_รูป Presentation 2.jpg"]}, "แขนกุด / โครตถูก 8": {"path": "CPU/แขนกุด/โครตถูก 8", "images": ["เสื้อกีฬาแขนกุด_รูป Presentation.jpg", "เสื้อกีฬาแขนกุด_สีขาว.jpg", "เสื้อกีฬาแขนกุด_สีชมพู.jpg", "เสื้อกีฬาแขนกุด_สีดำ.jpg", "เสื้อกีฬาแขนกุด_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนกุด_สีฟ้า.jpg", "เสื้อกีฬาแขนกุด_สีม่วง.jpg", "เสื้อกีฬาแขนกุด_สีส้ม.jpg", "เสื้อกีฬาแขนกุด_สีเขียว.jpg", "เสื้อกีฬาแขนกุด_สีเหลือง.jpg", "เสื้อกีฬาแขนกุด_สีแดง.jpg"]}}, "Grandsport": {"โปโล สปอร์ต": {"path": "Grandsport/โปโล สปอร์ต", "images": ["12-585.jpg", "LINE_ALBUM_12-585_240718_1.jpg"]}}, "Moon dog": {"Moon dog": {"path": "Moon dog", "images": ["901525_0.jpg"]}, "MD-1": {"path": "Moon dog/MD-1", "images": ["S__379453558_0.jpg", "S__379453559_0.jpg", "S__379453560_0.jpg", "S__379453561_0.jpg", "S__379453562_0.jpg", "S__379453563_0.jpg", "S__379453564_0.jpg", "S__379453565_0.jpg", "S__379453566_0.jpg", "S__379453567_0.jpg", "S__379453568.jpg"]}}, "Poligan": {"เสื้อโปโล / PG007-008 โปโลแบบปล่อย": {"path": "Poligan/เสื้อโปโล/PG007-008", "images": ["เสื้อโปโล_รูป Presentation.jpg"]}, "เสื้อโปโล / PG009-010": {"path": "Poligan/เสื้อโปโล/PG009-010", "images": ["เสื้อโปโล_รูป Presentation.jpg", "เสื้อโปโล_สีขาวจั๊ว.jpg", "เสื้อโปโล_สีชมพูกะปิ.jpg", "เสื้อโปโล_สีชมพูพิ้งค์.jpg", "เสื้อโปโล_สีน้ำตาล.jpg", "เสื้อโปโล_สีฟ้าทะเล.jpg", "เสื้อโปโล_สีฟ้าใส.jpg", "เสื้อโปโล_สีม่วงกลาง.jpg", "เสื้อโปโล_สีม่วงมะปราง.jpg", "เสื้อโปโล_สีส้มอิฐ.jpg", "เสื้อโปโล_สีส้มแสด.jpg", "เสื้อโปโล_สีเขียวมะกอก.jpg", "เสื้อโปโล_สีเขียวสะท้อน.jpg", "เสื้อโปโล_สีเขียวสะท้อน_2.jpg", "เสื้อโปโล_สีเขียวสะท้อน_3.jpg", "เสื้อโปโล_สีเขียวหยก.jpg", "เสื้อโปโล_สีเทา.jpg", "เสื้อโปโล_สีเหลืองจันทร์.jpg", "เสื้อโปโล_สีแดง.jpg"]}, "เสื้อโปโล / PS001-002 โปโลกีฬา โพลิแกน เอส": {"path": "Poligan/เสื้อโปโล/PS001-002", "images": ["เสื้อโปโล_รูป Presentation.jpg", "เสื้อโปโล_สีกรม.jpg", "เสื้อโปโล_สีขาว.jpg", "เสื้อโปโล_สีชมพู.jpg", "เสื้อโปโล_สีดำ.jpg", "เสื้อโปโล_สีน้ำเงิน.jpg", "เสื้อโปโล_สีฟ้า.jpg", "เสื้อโปโล_สีม่วงเข้ม.jpg", "เสื้อโปโล_สีส้ม.jpg", "เสื้อโปโล_สีเขียวสด.jpg", "เสื้อโปโล_สีเทาเข้ม.jpg", "เสื้อโปโล_สีเหลืองจันทร์.jpg", "เสื้อโปโล_สีแดง.jpg"]}, "เสื้อโปโล / PS003-004 โปโลกีฬา โพลิแกน เอส": {"path": "Poligan/เสื้อโปโล/PS003-004", "images": ["เสื้อโปโล_รูป Presentation.jpg", "เสื้อโปโล_สีกรม.jpg", "เสื้อโปโล_สีขาว.jpg", "เสื้อโปโล_สีชมพู.jpg", "เสื้อโปโล_สีดำ.jpg", "เสื้อโปโล_สีน้ำเงิน.jpg", "เสื้อโปโล_สีฟ้า.jpg", "เสื้อโปโล_สีม่วงเข้ม.jpg", "เสื้อโปโล_สีส้ม.jpg", "เสื้อโปโล_สีเขียวตอง.jpg", "เสื้อโปโล_สีเทาเข้ม.jpg", "เสื้อโปโล_สีเลือดหมู.jpg", "เสื้อโปโล_สีเหลืองจันทร์.jpg", "เสื้อโปโล_สีแดง.jpg"]}, "เสื้อโปโล / PS013-014 เอส ไลท์": {"path": "Poligan/เสื้อโปโล/PS013-014", "images": ["เสื้อโปโล_รูป Presentation.jpg", "เสื้อโปโล_สีกรมท่า.jpg", "เสื้อโปโล_สีกรมท่า_2.jpg", "เสื้อโปโล_สีกรมท่า_3.jpg", "เสื้อโปโล_สีขาว.jpg", "เสื้อโปโล_สีขาว_2.jpg", "เสื้อโปโล_สีขาว_3.jpg", "เสื้อโปโล_สีชมพู.jpg", "เสื้อโปโล_สีชมพู_2.jpg", "เสื้อโปโล_สีดำ.jpg", "เสื้อโปโล_สีดำ_2.jpg", "เสื้อโปโล_สีดำ_3.jpg", "เสื้อโปโล_สีฟ้า.jpg", "เสื้อโปโล_สีฟ้า_2.jpg", "เสื้อโปโล_สีม่วง.jpg", "เสื้อโปโล_สีม่วง_2.jpg", "เสื้อโปโล_สีส้ม.jpg", "เสื้อโปโล_สีส้ม_2.jpg", "เสื้อโปโล_สีส้ม_3.jpg", "เสื้อโปโล_สีเขียวหยก.jpg", "เสื้อโปโล_สีเขียวหยก_2.jpg", "เสื้อโปโล_สีเทา.jpg", "เสื้อโปโล_สีเลือดหมู.jpg", "เสื้อโปโล_สีเลือดหมู_2.jpg", "เสื้อโปโล_สีเลือดหมู_3.jpg", "เสื้อโปโล_สีเหลือง.jpg", "เสื้อโปโล_สีเหลือง_2.jpg", "เสื้อโปโล_สีเหลือง_3.jpg", "เสื้อโปโล_สีแดง.jpg", "เสื้อโปโล_สีแดง_2.jpg", "เสื้อโปโล_สีแดง_3.jpg"]}, "เสื้อโปโล / PS019 โปโลปกเชิ้ต": {"path": "Poligan/เสื้อโปโล/PS019", "images": ["เสื้อโปโล_รูป Presentation.jpg", "เสื้อโปโล_สีกรม.jpg", "เสื้อโปโล_สีขาว.jpg", "เสื้อโปโล_สีชมพูจุฬา.jpg", "เสื้อโปโล_สีดำ.jpg", "เสื้อโปโล_สีน้ำเงิน.jpg", "เสื้อโปโล_สีฟ้า.jpg", "เสื้อโปโล_สีม่วง.jpg", "เสื้อโปโล_สีเขียวเทอควอยซ์.jpg", "เสื้อโปโล_สีเทา.jpg", "เสื้อโปโล_สีเหลืองทอง.jpg"]}, "เสื้อโปโล / PS021 โปโลพิมพ์ลาย": {"path": "Poligan/เสื้อโปโล/เสื้อโปโล_พิมพ์ลาย_PS021", "images": ["เสื้อโปโล_รูป Presentation.jpg", "เสื้อโปโล_สีชมพู.jpg", "เสื้อโปโล_สีน้ำเงิน.jpg", "เสื้อโปโล_สีฟ้า.jpg", "เสื้อโปโล_สีส้ม.jpg", "เสื้อโปโล_สีเขียว.jpg", "เสื้อโปโล_สีเหลือง.jpg", "เสื้อโปโล_สีแดง.jpg"]}, "เสื้อโปโล / PS027 โปโลพิมพ์ลายไทย": {"path": "Poligan/เสื้อโปโล/เสื้อโปโล_พิมพ์ลาย_PS027", "images": ["เสื้อโปโล_รูป Presentation.jpg", "เสื้อโปโล_สีกรม.jpg", "เสื้อโปโล_สีกรม_2.jpg", "เสื้อโปโล_สีชมพู.jpg", "เสื้อโปโล_สีชมพู_2.jpg", "เสื้อโปโล_สีฟ้า.jpg", "เสื้อโปโล_สีฟ้า_2.jpg", "เสื้อโปโล_สีม่วง.jpg", "เสื้อโปโล_สีม่วง_2.jpg", "เสื้อโปโล_สีส้ม.jpg", "เสื้อโปโล_สีส้ม_2.jpg", "เสื้อโปโล_สีเขียว.jpg", "เสื้อโปโล_สีเขียว_2.jpg", "เสื้อโปโล_สีเหลือง.jpg", "เสื้อโปโล_สีเหลือง_2.jpg", "เสื้อโปโล_สีแดง.jpg", "เสื้อโปโล_สีแดง_2.jpg"]}, "เสื้อโปโล / PS029 โปโลปกเชิ้ตพาสเทล": {"path": "Poligan/เสื้อโปโล/PS029", "images": ["เสื้อโปโล_รูป Presentation.jpg", "เสื้อโปโล_สีกากี.jpg", "เสื้อโปโล_สีกากีอ่อน.jpg", "เสื้อโปโล_สีน้ำตาล.jpg", "เสื้อโปโล_สีฟ้า.jpg", "เสื้อโปโล_สีฟ้าคราม.jpg", "เสื้อโปโล_สีฟ้าอมเขียว.jpg", "เสื้อโปโล_สีเขียว.jpg", "เสื้อโปโล_สีเขียวขี้ม้า.jpg", "เสื้อโปโล_สีเทา.jpg", "เสื้อโปโล_สีเหลือง.jpg"]}, "เสื้อโปโล / PS031 โปโลไหล่สโลป พิมพ์ลายพราง": {"path": "Poligan/เสื้อโปโล/PS031", "images": ["เสื้อโปโล_รูป Presentation.jpg", "เสื้อโปโล_สีกรม.jpg", "เสื้อโปโล_สีชมพูดัสตี้พีช.jpg", "เสื้อโปโล_สีชมพูเบบี้พิงค์.jpg", "เสื้อโปโล_สีชาไทย.jpg", "เสื้อโปโล_สีน้ำเงิน.jpg", "เสื้อโปโล_สีฟ้า.jpg", "เสื้อโปโล_สีม่วง.jpg", "เสื้อโปโล_สีเขียว.jpg", "เสื้อโปโล_สีเทา.jpg", "เสื้อโปโล_สีเหลือง.jpg", "เสื้อโปโล_สีแดง.jpg"]}, "เสื้อยืด / แขนยาว BM003": {"path": "Poligan/Poligan/แขนยาว BM003", "images": ["cover.jpg"]}, "เสื้อยืด / แขนสั้น PG222 (Soft Flow ผ้านุ่ม)": {"path": "Poligan/Poligan/Soft Flow PG222 แขนสั้น ผ้านุ่ม", "images": ["274477_0.jpg", "274478_0.jpg", "274479_0.jpg", "274480_0.jpg", "274481_0.jpg", "274482_0.jpg", "274483_0.jpg", "274484_0.jpg", "274485_0.jpg", "274486_0.jpg", "274487_0.jpg", "274488_0.jpg", "274489_0.jpg", "274490_0.jpg", "274491_0.jpg", "277571_0.jpg", "cover.jpg", "ค่าสกรีน.jpg"]}, "เสื้อยืด / แขนสั้น กุ้นคอ PG111": {"path": "Poligan/Poligan/แขนสั้น กุ้นคอ PG111", "images": ["cover.jpg"]}}, "Portman": {"เสื้อกีฬา / เสื้อแขนกุด G6907": {"path": "Portman/เสื้อกีฬา/เสื้อแขนกุด G6907", "images": ["เสื้อแขนกุด_ดำ.jpg", "เสื้อแขนกุด_น้ำเงิน.jpg", "เสื้อแขนกุด_ปก.jpg", "เสื้อแขนกุด_เขียว.jpg"]}, "เสื้อกีฬา / PIM04": {"path": "Portman/เสื้อกีฬา/PIM04", "images": ["portman-pim-04-1-1024x1015.jpg", "portman-pim-04-10-1024x1015.jpg", "portman-pim-04-11-1024x1015.jpg", "portman-pim-04-12-1024x1015.jpg", "portman-pim-04-2-1024x1015.jpg", "portman-pim-04-3-1024x1015.jpg", "portman-pim-04-4-1024x1015.jpg", "portman-pim-04-5-724x1024.jpg", "portman-pim-04-6-1024x1015.jpg", "portman-pim-04-7-1024x1015.jpg", "portman-pim-04-8-1024x1015.jpg", "portman-pim-04-9-1024x1015.jpg"]}, "เสื้อกีฬา / PIM02": {"path": "Portman/เสื้อกีฬา/PIM02", "images": ["KID.jpg"]}}, "Warrix": {"Warrix": {"path": "Warrix", "images": ["S__30965947_0.jpg", "S__30965948_0.jpg", "S__30965949_0.jpg", "S__30965950_0.jpg", "S__30965951_0.jpg", "S__30965952_0.jpg", "S__30965953_0.jpg", "S__30965954_0.jpg", "S__30965955_0.jpg"]}, "Warrix (2)": {"path": "Warrix/Warrix", "images": ["17480.jpg", "246121_0.jpg", "435778.jpg", "S__30302260_0_0.jpg", "WA-252PLACL30_0.jpg", "WA-3315N new(1).jpg", "WA-3315N.jpg", "WA-3318N Catalog 20230831.jpg", "WA-3324.jpg"]}, "Warrix / Linex": {"path": "Warrix/Warrix/Linex", "images": ["S__32038967_0_0.jpg", "S__32038968_0_0.jpg", "S__32038969_0_0.jpg", "S__32038970_0_0.jpg", "S__32038972_0_0.jpg", "S__32038973_0_0.jpg", "S__32038974_0_0.jpg", "S__32038975_0_0.jpg", "S__32038976_0_0.jpg", "S__32038977_0.jpg", "S__32800771_0.jpg", "S__35610689_0.jpg", "S__35610690_0.jpg", "S__35610691_0.jpg", "S__35610692_0.jpg", "S__35725317_0_0.jpg", "S__35725318_0_0.jpg", "S__35725319_0_0.jpg"]}}, "กางเกงวอลเลยบอล": {"กางเกงวอลเลยบอล": {"path": "กางเกงวอลเลยบอล", "images": ["LINE_ALBUM_SPORT JERSEY 2026_260417_12.jpg"]}}, "หมวก": {"หมวกแก๊ป": {"path": "หมวก/หมวกแก๊ป", "images": ["Black_cap.jpg", "back_side_cap.jpg", "blue_cap.jpg", "cream_cap.jpg", "dark_blue_cap.jpg", "green_cap.jpg", "neon_green _cap.jpg", "orange_cap.jpg", "pink_cap.jpg", "red_cap.jpg", "white_cap.jpg", "yellow_cap.jpg"]}}, "เสื้อยืด ตะวัน": {"เสื้อยืด ตะวัน": {"path": "เสื้อยืด ตะวัน", "images": ["690147984_1590474603078152_3553705327967178709_n.jpg", "690760736_1590474639744815_264448506816318968_n.jpg", "701895027_1599018482223764_9221242873842411002_n.jpg", "702466139_1599018518890427_6597670434209625618_n.jpg", "710745442_1608506271274985_6191543381511417421_n.jpg", "720785103_1620658913393054_6500730054832426858_n.jpg", "752488815_1660899512702327_6036848580117574970_n.jpg", "771708843_1679159250876353_4490618310921427008_n.jpg", "S__43098146_0.jpg", "S__43098148_0.jpg", "S__43098149_0.jpg", "S__43098150_0.jpg", "S__43098151_0.jpg", "S__43098152_0.jpg", "S__43098153_0.jpg", "S__43098154_0.jpg", "S__43098155_0.jpg", "S__43098156_0.jpg", "S__43098157_0.jpg", "S__43098159_0.jpg", "S__43098160_0.jpg", "S__43098161_0.jpg", "S__43098162_0.jpg", "S__43098163_0.jpg", "S__43098164_0.jpg", "S__43098165_0.jpg", "S__43098166_0.jpg", "S__43098167_0.jpg", "S__43098168_0.jpg", "S__43098170_0.jpg", "S__43098171_0.jpg", "S__43098172_0.jpg", "S__43098173_0.jpg", "S__43098174_0.jpg", "S__43098175_0.jpg", "S__43098176_0.jpg", "S__43098177_0.jpg", "S__43098178_0.jpg", "S__43098179_0.jpg", "S__43098181_0.jpg", "S__43098182_0.jpg", "S__43098183_0.jpg", "S__43098184_0.jpg", "S__43098185_0.jpg", "S__43098186_0.jpg", "S__43098187_0.jpg", "S__43098188_0.jpg", "S__43098189_0.jpg", "S__43098190_0.jpg", "S__43098192_0.jpg", "S__43098193_0.jpg", "S__43098194_0.jpg", "S__43098195_0.jpg", "S__43098196_0.jpg", "S__43098197_0.jpg", "แคตตาล็อกเสื้อยืด_ตะวัน_หน้าเดียว.jpg"]}}, "แก้วน้ำ": {"แก้วน้ำ": {"path": "แก้วน้ำ", "images": ["S__83828859_0.jpg", "S__83828876_0.jpg", "S__83828884_0.jpg", "S__83828886_0.jpg", "S__83828887_0.jpg"]}, "cup 1": {"path": "แก้วน้ำ/cup 1", "images": ["1.JPG"]}, "select": {"path": "แก้วน้ำ/select", "images": ["S__83828862_0.jpg", "S__83828863_0.jpg", "S__83828864_0.jpg", "S__83828865_0.jpg", "S__83828866_0.jpg", "S__83828867_0.jpg", "S__83828868_0.jpg", "S__83828869_0.jpg", "S__83828870_0.jpg", "S__83828872_0.jpg", "S__83828873_0.jpg", "S__83828874_0.jpg", "S__83828875_0.jpg", "S__83828877_0.jpg", "S__83828878_0.jpg", "S__83828879_0.jpg", "S__83828880_0.jpg", "S__83828881_0.jpg", "S__83828883_0.jpg"]}}, "แบบสกรีนงานศพ": {"แบบสกรีนงานศพ": {"path": "แบบสกรีนงานศพ", "images": ["sample.jpg"]}}};
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-h"><span>ยี่ห้อสินค้า</span><button class="icon-btn" id="drawerClose" aria-label="ปิด"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="drawer-list" id="drawerList"></div>
+</aside>
 
-        // หมวดย่อยของแต่ละยี่ห้อ: แยกตามประเภทแขนเสื้อ (ใช้กับยี่ห้อ CPU และ Poligan)
-        const SUBGROUPS = { 'CPU': ['แขนสั้น', 'แขนยาว', 'แขนกุด'], 'Poligan': ['เสื้อโปโล', 'เสื้อยืด'] };
-        function SUBLABEL(cat, p) { return cat === 'CPU' ? 'เสื้อกีฬา' + p : p; }
+<main id="main"></main>
 
-        function slug(s) { return 'cat-' + s.replace(/[^a-zA-Z0-9ก-๙]/g, '_'); }
+<footer class="foot">
+  <div class="logo"><i>ว</i><span>ร้านวราภรณ์</span></div>
+  <p>แตะที่สินค้าเพื่อดูรูปทุกสี ทุกแบบ</p>
+  <p class="copy">© ร้านวราภรณ์</p>
+</footer>
 
-        let currentImages = [];
-        let currentIndex = 0;
-        let currentTitle = '';
+<div class="lightbox-overlay" id="lightbox">
+  <div class="lightbox-header">
+    <div><div class="lightbox-title" id="lbTitle"></div><div class="lightbox-counter" id="lbCounter"></div></div>
+    <button class="lightbox-close" id="lbClose" aria-label="Close">&times;</button>
+  </div>
+  <div class="lightbox-main" id="lbMain">
+    <button class="lightbox-arrow prev" id="lbPrev" aria-label="Previous">&#10094;</button>
+    <img id="lbImage" src="" alt="">
+    <button class="lightbox-arrow next" id="lbNext" aria-label="Next">&#10095;</button>
+  </div>
+  <div class="lightbox-thumbs" id="lbThumbs"></div>
+</div>
 
-        function initGallery() {
-            const gallery = document.getElementById('gallery');
-            const nav = document.getElementById('categoryNav');
-            const stats = document.getElementById('stats');
+<script>
+const galleryData = {"Abba": {"แขนยาว BM-7": {"path": "Abba/แขนยาว BM-7", "images": ["1.jpg", "10.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "7.jpg", "8.jpg", "9.jpg"]}, "แขนสั่น unlimited Y1": {"path": "Abba/แขนสั่น unlimited Y1", "images": ["1.jpg", "10.jpg", "11.jpg", "12.jpg", "13.jpg", "14.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "7.jpg", "8.jpg", "9.jpg"]}, "แขนสั้น BM-7": {"path": "Abba/แขนสั้น BM-7", "images": ["1.jpg", "10.JPG", "11.JPG", "12.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "576670707_1268030435340402_6150432869715891722_n.jpg", "6.JPG", "7.JPG", "8.JPG", "9.JPG"]}, "แขนสั้น BM-8": {"path": "Abba/แขนสั้น BM-8", "images": ["1378833.jpg"]}, "X1 เม็ดข้าวโพด": {"path": "Abba/X1 เม็ดข้าวโพด", "images": ["1.jpg", "10.jpg", "11.jpg", "12.jpg", "13.jpg", "14.jpg", "15.jpg", "16.jpg", "17.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "7.jpg", "8.jpg", "9.jpg"]}}, "BCS": {"แจ็กแก็ต_คอจีน T41": {"path": "BCS/แจ็กแก็ต_คอจีน T41", "images": ["BLINE_ALBUM_เสื้อแจ็คเก็ต คอจีนหลิบทอสีพื้น รหัส T41.jpg", "CBLINE_ALBUM_เสื้อแจ็คเก็ต คอจีนหลิบทอสีพื้น รหัส T41.jpg", "DLINE_ALBUM_เสื้อแจ็คเก็ต คอจีนหลิบทอสีพื้น รหัส T41.jpg", "ELINE_ALBUM_เสื้อแจ็คเก็ต คอจีนหลิบทอสีพื้น รหัส T41.jpg", "FLINE_ALBUM_เสื้อแจ็คเก็ต คอจีนหลิบทอสีพื้น รหัส T41.jpg", "GLINE_ALBUM_เสื้อแจ็คเก็ต คอจีนหลิบทอสีพื้น รหัส T41.jpg", "HLINE_ALBUM_เสื้อแจ็คเก็ต คอจีนหลิบทอสีพื้น รหัส T41.jpg", "LINE_ALBUM_เสื้อแจ็คเก็ต คอจีนหลิบทอสีพื้น รหัส T41.jpg"]}}, "CPU": {"แขนสั้น / Titan Zone คอปกวี": {"path": "CPU/แขนสั้น/Titan Zone คอปกวี", "images": ["เสื้อกีฬาแขนสั้น_สีชมพู.jpg", "เสื้อกีฬาแขนสั้น_สีน้ำตาล.jpg", "เสื้อกีฬาแขนสั้น_สีฟ้า.jpg", "เสื้อกีฬาแขนสั้น_สีม่วง.jpg", "เสื้อกีฬาแขนสั้น_สีรุ้ง.jpg", "เสื้อกีฬาแขนสั้น_สีเขียว.jpg", "เสื้อกีฬาแขนสั้น_สีเทา.jpg", "เสื้อกีฬาแขนสั้น_สีเรนโบว์.jpg", "เสื้อกีฬาแขนสั้น_สีโอรสชมพู.jpg", "เสื้อกีฬาแขนสั้น_สีโอรสล้ม.jpg", "เสื้อกีฬาแขนสั้น_รูป Presentation 2.jpg"]}, "แขนสั้น / K11": {"path": "CPU/แขนสั้น/K11", "images": ["เสื้อกีฬาแขนสั้น_สีขาว.jpg", "เสื้อกีฬาแขนสั้น_สีชมพู.jpg", "เสื้อกีฬาแขนสั้น_สีดำ.jpg", "เสื้อกีฬาแขนสั้น_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนสั้น_สีฟ้า.jpg", "เสื้อกีฬาแขนสั้น_สีม่วง.jpg", "เสื้อกีฬาแขนสั้น_สีส้ม.jpg", "เสื้อกีฬาแขนสั้น_สีเขียว.jpg", "เสื้อกีฬาแขนสั้น_สีเหลือง.jpg", "เสื้อกีฬาแขนสั้น_สีแดง.jpg"]}, "แขนสั้น / 126": {"path": "CPU/แขนสั้น/126", "images": ["เสื้อกีฬาแขนสั้น_รวมสี_126.jpg", "เสื้อกีฬาแขนสั้น_สีขาว (2).jpg", "เสื้อกีฬาแขนสั้น_สีขาว.jpg", "เสื้อกีฬาแขนสั้น_สีชมพู.jpg", "เสื้อกีฬาแขนสั้น_สีดำ.jpg", "เสื้อกีฬาแขนสั้น_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนสั้น_สีฟ้า.jpg", "เสื้อกีฬาแขนสั้น_สีม่วง.jpg", "เสื้อกีฬาแขนสั้น_สีส้ม.jpg", "เสื้อกีฬาแขนสั้น_สีเขียว.jpg", "เสื้อกีฬาแขนสั้น_สีเหลือง.jpg", "เสื้อกีฬาแขนสั้น_สีแดง.jpg"]}, "แขนสั้น / 124": {"path": "CPU/แขนสั้น/124", "images": ["เสื้อกีฬาแขนสั้น_รวมสี_124.jpg", "เสื้อกีฬาแขนสั้น_สีขาว.jpg", "เสื้อกีฬาแขนสั้น_สีชมพู.jpg", "เสื้อกีฬาแขนสั้น_สีดำ.jpg", "เสื้อกีฬาแขนสั้น_สีน้ำเงินเข้ม.jpg", "เสื้อกีฬาแขนสั้น_สีฟ้า.jpg", "เสื้อกีฬาแขนสั้น_สีม่วง.jpg", "เสื้อกีฬาแขนสั้น_สีส้ม.jpg", "เสื้อกีฬาแขนสั้น_สีเขียว.jpg", "เสื้อกีฬาแขนสั้น_สีเหลือง.jpg", "เสื้อกีฬาแขนสั้น_สีแดง.jpg"]}, "แขนสั้น / 125": {"path": "CPU/แขนสั้น/125", "images": ["เสื้อกีฬาแขนสั้น_รวมสี.jpg", "เสื้อกีฬาแขนสั้น_สีขาว.jpg", "เสื้อกีฬาแขนสั้น_สีชมพู.jpg", "เสื้อกีฬาแขนสั้น_สีดำ.jpg", "เสื้อกีฬาแขนสั้น_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนสั้น_สีฟ้า.jpg", "เสื้อกีฬาแขนสั้น_สีม่วง.jpg", "เสื้อกีฬาแขนสั้น_สีส้ม.jpg", "เสื้อกีฬาแขนสั้น_สีเขียว.jpg", "เสื้อกีฬาแขนสั้น_สีเหลือง.jpg", "เสื้อกีฬาแขนสั้น_สีแดง.jpg"]}, "แขนสั้น / K12": {"path": "CPU/แขนสั้น/K12", "images": ["เสื้อกีฬาแขนสั้น_สีขาว.jpg", "เสื้อกีฬาแขนสั้น_สีชมพู.jpg", "เสื้อกีฬาแขนสั้น_สีดำ.jpg", "เสื้อกีฬาแขนสั้น_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนสั้น_สีฟ้า.jpg", "เสื้อกีฬาแขนสั้น_สีม่วง.jpg", "เสื้อกีฬาแขนสั้น_สีส้ม.jpg", "เสื้อกีฬาแขนสั้น_สีเขียว.jpg", "เสื้อกีฬาแขนสั้น_สีเหลือง.jpg", "เสื้อกีฬาแขนสั้น_สีแดง.jpg"]}, "แขนสั้น / Titan Xone คอ 5 เหลี่ยม": {"path": "CPU/แขนสั้น/Titan Xone คอ 5 เหลี่ยม", "images": ["เสื้อกีฬาแขนสั้น_รูป Presentation.jpg", "เสื้อกีฬาแขนสั้น_สีขาว.jpg", "เสื้อกีฬาแขนสั้น_สีครีม.jpg", "เสื้อกีฬาแขนสั้น_สีชมพู.jpg", "เสื้อกีฬาแขนสั้น_สีชมพูอ่อน.jpg", "เสื้อกีฬาแขนสั้น_สีฟ้า.jpg", "เสื้อกีฬาแขนสั้น_สีม่วง.jpg", "เสื้อกีฬาแขนสั้น_สีส้ม.jpg", "เสื้อกีฬาแขนสั้น_สีเขียว.jpg", "เสื้อกีฬาแขนสั้น_สีเขียวมิ้น.jpg", "เสื้อกีฬาแขนสั้น_สีเทา.jpg", "เสื้อกีฬาแขนสั้น_สีเหลือง.jpg", "เสื้อกีฬาแขนสั้น_สีแดง.jpg", "เสื้อกีฬาแขนสั้น_สีโอรสชมพู.jpg", "เสื้อกีฬาแขนสั้น_สีโอรสส้ม.jpg"]}, "แขนสั้น / โครตถูก 8": {"path": "CPU/แขนสั้น/โครตถูก 8", "images": ["เสื้อกีฬาแขนสั้น_รูป Presentation.jpg", "เสื้อกีฬาแขนสั้น_สีขาว.jpg", "เสื้อกีฬาแขนสั้น_สีชมพู.jpg", "เสื้อกีฬาแขนสั้น_สีดำ.jpg", "เสื้อกีฬาแขนสั้น_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนสั้น_สีฟ้า.jpg", "เสื้อกีฬาแขนสั้น_สีม่วง.jpg", "เสื้อกีฬาแขนสั้น_สีส้ม.jpg", "เสื้อกีฬาแขนสั้น_สีเขียว.jpg", "เสื้อกีฬาแขนสั้น_สีเหลือง.jpg", "เสื้อกีฬาแขนสั้น_สีแดง.jpg"]}, "แขนสั้น / โครตถูก 9": {"path": "CPU/แขนสั้น/โครตถูก 9", "images": ["เสื้อกีฬาแขนสั้น_รูป Presentation.jpg", "เสื้อกีฬาแขนสั้น_สีขาว.jpg", "เสื้อกีฬาแขนสั้น_สีชมพู.jpg", "เสื้อกีฬาแขนสั้น_สีดำ.jpg", "เสื้อกีฬาแขนสั้น_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนสั้น_สีฟ้า.jpg", "เสื้อกีฬาแขนสั้น_สีม่วง.jpg", "เสื้อกีฬาแขนสั้น_สีส้ม.jpg", "เสื้อกีฬาแขนสั้น_สีเขียว.jpg", "เสื้อกีฬาแขนสั้น_สีเหลือง.jpg", "เสื้อกีฬาแขนสั้น_สีแดง.jpg", "เสื้อกีฬาแขนสั้น_สีขาว 2.jpg", "เสื้อกีฬาแขนสั้น_สีชมพู 2.jpg", "เสื้อกีฬาแขนสั้น_สีดำ 2.jpg", "เสื้อกีฬาแขนสั้น_สีน้ำเงิน 2.jpg", "เสื้อกีฬาแขนสั้น_สีฟ้า 2.jpg", "เสื้อกีฬาแขนสั้น_สีม่วง 2.jpg", "เสื้อกีฬาแขนสั้น_สีส้ม 2.jpg", "เสื้อกีฬาแขนสั้น_สีเขียว 2.jpg", "เสื้อกีฬาแขนสั้น_สีเหลือง 2.jpg", "เสื้อกีฬาแขนสั้น_สีแดง 2.jpg"]}, "แขนยาว / 124": {"path": "CPU/แขนยาว/124", "images": ["เสื้อกีฬาแขนยาว_รูป Presentation.jpg", "เสื้อกีฬาแขนยาว_สีขาว.jpg", "เสื้อกีฬาแขนยาว_สีชมพู.jpg", "เสื้อกีฬาแขนยาว_สีดำ.jpg", "เสื้อกีฬาแขนยาว_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนยาว_สีส้ม.jpg", "เสื้อกีฬาแขนยาว_สีเขียว.jpg", "เสื้อกีฬาแขนยาว_สีเหลือง.jpg", "เสื้อกีฬาแขนยาว_สีแดง.jpg"]}, "แขนยาว / 125": {"path": "CPU/แขนยาว/125", "images": ["เสื้อกีฬาแขนยาว_รูป Presentation.jpg", "เสื้อกีฬาแขนยาว_สีขาว.jpg", "เสื้อกีฬาแขนยาว_สีชมพู.jpg", "เสื้อกีฬาแขนยาว_สีดำ.jpg", "เสื้อกีฬาแขนยาว_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนยาว_สีฟ้า.jpg", "เสื้อกีฬาแขนยาว_สีม่วง.jpg", "เสื้อกีฬาแขนยาว_สีส้ม.jpg", "เสื้อกีฬาแขนยาว_สีเขียว.jpg", "เสื้อกีฬาแขนยาว_สีเหลือง.jpg", "เสื้อกีฬาแขนยาว_สีแดง.jpg"]}, "แขนยาว / K11": {"path": "CPU/แขนยาว/K11", "images": ["เสื้อกีฬาแขนยาว_รูป Presentation.jpg", "เสื้อกีฬาแขนยาว_สีขาว.jpg", "เสื้อกีฬาแขนยาว_สีชมพู.jpg", "เสื้อกีฬาแขนยาว_สีดำ.jpg", "เสื้อกีฬาแขนยาว_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนยาว_สีฟ้า.jpg", "เสื้อกีฬาแขนยาว_สีม่วง.jpg", "เสื้อกีฬาแขนยาว_สีส้ม.jpg", "เสื้อกีฬาแขนยาว_สีเขียว.jpg", "เสื้อกีฬาแขนยาว_สีเหลือง.jpg", "เสื้อกีฬาแขนยาว_สีแดง.jpg"]}, "แขนยาว / K12": {"path": "CPU/แขนยาว/K12", "images": ["เสื้อกีฬาแขนยาว_สีขาว.jpg", "เสื้อกีฬาแขนยาว_สีชมพู.jpg", "เสื้อกีฬาแขนยาว_สีดำ.jpg", "เสื้อกีฬาแขนยาว_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนยาว_สีฟ้า.jpg", "เสื้อกีฬาแขนยาว_สีม่วง.jpg", "เสื้อกีฬาแขนยาว_สีส้ม.jpg", "เสื้อกีฬาแขนยาว_สีเขียว.jpg", "เสื้อกีฬาแขนยาว_สีเหลือง.jpg", "เสื้อกีฬาแขนยาว_สีแดง.jpg"]}, "แขนยาว / โครตถูก7": {"path": "CPU/แขนยาว/โครตถูก7", "images": ["เสื้อกีฬาแขนยาว_รูป Presentation.jpg", "เสื้อกีฬาแขนยาว_สีขาว.jpg", "เสื้อกีฬาแขนยาว_สีชมพู.jpg", "เสื้อกีฬาแขนยาว_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนยาว_สีฟ้า.jpg", "เสื้อกีฬาแขนยาว_สีม่วง.jpg", "เสื้อกีฬาแขนยาว_สีส้ม.jpg", "เสื้อกีฬาแขนยาว_สีเขียว.jpg", "เสื้อกีฬาแขนยาว_สีเหลือง.jpg", "เสื้อกีฬาแขนยาว_สีแดง.jpg"]}, "แขนยาว / โครตถูก8": {"path": "CPU/แขนยาว/โครตถูก8", "images": ["เสื้อกีฬาแขนยาว_รูป Presentation.jpg", "เสื้อกีฬาแขนยาว_สีขาว.jpg", "เสื้อกีฬาแขนยาว_สีชมพู.jpg", "เสื้อกีฬาแขนยาว_สีดำ.jpg", "เสื้อกีฬาแขนยาว_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนยาว_สีฟ้า.jpg", "เสื้อกีฬาแขนยาว_สีม่วง.jpg", "เสื้อกีฬาแขนยาว_สีส้ม.jpg", "เสื้อกีฬาแขนยาว_สีเขียว.jpg", "เสื้อกีฬาแขนยาว_สีเหลือง.jpg", "เสื้อกีฬาแขนยาว_สีแดง.jpg"]}, "แขนกุด / 125": {"path": "CPU/แขนกุด/125", "images": ["เสื้อกีฬาแขนกุด_รูป Presentation.jpg", "เสื้อกีฬาแขนกุด_สีขาว.jpg", "เสื้อกีฬาแขนกุด_สีชมพู.jpg", "เสื้อกีฬาแขนกุด_สีดำ.jpg", "เสื้อกีฬาแขนกุด_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนกุด_สีฟ้า.jpg", "เสื้อกีฬาแขนกุด_สีม่วง.jpg", "เสื้อกีฬาแขนกุด_สีส้ม.jpg", "เสื้อกีฬาแขนกุด_สีเขียว.jpg", "เสื้อกีฬาแขนกุด_สีเหลือง.jpg", "เสื้อกีฬาแขนกุด_สีแดง.jpg"]}, "แขนกุด / K10": {"path": "CPU/แขนกุด/K10", "images": ["เสื้อกีฬาแขนกุด_รูป Presentation.jpg", "เสื้อกีฬาแขนกุด_สีชมพู.jpg", "เสื้อกีฬาแขนกุด_สีดำ.jpg", "เสื้อกีฬาแขนกุด_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนกุด_สีฟ้า.jpg", "เสื้อกีฬาแขนกุด_สีม่วง.jpg", "เสื้อกีฬาแขนกุด_สีส้ม.jpg", "เสื้อกีฬาแขนกุด_สีเขียว.jpg", "เสื้อกีฬาแขนกุด_สีเหลือง.jpg", "เสื้อกีฬาแขนกุด_สีแดง.jpg"]}, "แขนกุด / K12": {"path": "CPU/แขนกุด/K12", "images": ["เสื้อกีฬาแขนกุด_รูป Presentation.jpg", "เสื้อกีฬาแขนกุด_สีขาว.jpg", "เสื้อกีฬาแขนกุด_สีชมพู.jpg", "เสื้อกีฬาแขนกุด_สีดำ.jpg", "เสื้อกีฬาแขนกุด_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนกุด_สีฟ้า.jpg", "เสื้อกีฬาแขนกุด_สีม่วง.jpg", "เสื้อกีฬาแขนกุด_สีส้ม.jpg", "เสื้อกีฬาแขนกุด_สีเขียว.jpg", "เสื้อกีฬาแขนกุด_สีเหลือง.jpg", "เสื้อกีฬาแขนกุด_สีแดง.jpg", "เสื้อกีฬาแขนกุด_รูป Presentation 2.jpg"]}, "แขนกุด / โครตถูก 8": {"path": "CPU/แขนกุด/โครตถูก 8", "images": ["เสื้อกีฬาแขนกุด_รูป Presentation.jpg", "เสื้อกีฬาแขนกุด_สีขาว.jpg", "เสื้อกีฬาแขนกุด_สีชมพู.jpg", "เสื้อกีฬาแขนกุด_สีดำ.jpg", "เสื้อกีฬาแขนกุด_สีน้ำเงิน.jpg", "เสื้อกีฬาแขนกุด_สีฟ้า.jpg", "เสื้อกีฬาแขนกุด_สีม่วง.jpg", "เสื้อกีฬาแขนกุด_สีส้ม.jpg", "เสื้อกีฬาแขนกุด_สีเขียว.jpg", "เสื้อกีฬาแขนกุด_สีเหลือง.jpg", "เสื้อกีฬาแขนกุด_สีแดง.jpg"]}}, "Grandsport": {"โปโล สปอร์ต": {"path": "Grandsport/โปโล สปอร์ต", "images": ["12-585.jpg", "LINE_ALBUM_12-585_240718_1.jpg"]}}, "Moon dog": {"Moon dog": {"path": "Moon dog", "images": ["901525_0.jpg"]}, "MD-1": {"path": "Moon dog/MD-1", "images": ["S__379453558_0.jpg", "S__379453559_0.jpg", "S__379453560_0.jpg", "S__379453561_0.jpg", "S__379453562_0.jpg", "S__379453563_0.jpg", "S__379453564_0.jpg", "S__379453565_0.jpg", "S__379453566_0.jpg", "S__379453567_0.jpg", "S__379453568.jpg"]}}, "Poligan": {"เสื้อโปโล / PG007-008 โปโลแบบปล่อย": {"path": "Poligan/เสื้อโปโล/PG007-008", "images": ["เสื้อโปโล_รูป Presentation.jpg"]}, "เสื้อโปโล / PG009-010": {"path": "Poligan/เสื้อโปโล/PG009-010", "images": ["เสื้อโปโล_รูป Presentation.jpg", "เสื้อโปโล_สีขาวจั๊ว.jpg", "เสื้อโปโล_สีชมพูกะปิ.jpg", "เสื้อโปโล_สีชมพูพิ้งค์.jpg", "เสื้อโปโล_สีน้ำตาล.jpg", "เสื้อโปโล_สีฟ้าทะเล.jpg", "เสื้อโปโล_สีฟ้าใส.jpg", "เสื้อโปโล_สีม่วงกลาง.jpg", "เสื้อโปโล_สีม่วงมะปราง.jpg", "เสื้อโปโล_สีส้มอิฐ.jpg", "เสื้อโปโล_สีส้มแสด.jpg", "เสื้อโปโล_สีเขียวมะกอก.jpg", "เสื้อโปโล_สีเขียวสะท้อน.jpg", "เสื้อโปโล_สีเขียวสะท้อน_2.jpg", "เสื้อโปโล_สีเขียวสะท้อน_3.jpg", "เสื้อโปโล_สีเขียวหยก.jpg", "เสื้อโปโล_สีเทา.jpg", "เสื้อโปโล_สีเหลืองจันทร์.jpg", "เสื้อโปโล_สีแดง.jpg"]}, "เสื้อโปโล / PS001-002 โปโลกีฬา โพลิแกน เอส": {"path": "Poligan/เสื้อโปโล/PS001-002", "images": ["เสื้อโปโล_รูป Presentation.jpg", "เสื้อโปโล_สีกรม.jpg", "เสื้อโปโล_สีขาว.jpg", "เสื้อโปโล_สีชมพู.jpg", "เสื้อโปโล_สีดำ.jpg", "เสื้อโปโล_สีน้ำเงิน.jpg", "เสื้อโปโล_สีฟ้า.jpg", "เสื้อโปโล_สีม่วงเข้ม.jpg", "เสื้อโปโล_สีส้ม.jpg", "เสื้อโปโล_สีเขียวสด.jpg", "เสื้อโปโล_สีเทาเข้ม.jpg", "เสื้อโปโล_สีเหลืองจันทร์.jpg", "เสื้อโปโล_สีแดง.jpg"]}, "เสื้อโปโล / PS003-004 โปโลกีฬา โพลิแกน เอส": {"path": "Poligan/เสื้อโปโล/PS003-004", "images": ["เสื้อโปโล_รูป Presentation.jpg", "เสื้อโปโล_สีกรม.jpg", "เสื้อโปโล_สีขาว.jpg", "เสื้อโปโล_สีชมพู.jpg", "เสื้อโปโล_สีดำ.jpg", "เสื้อโปโล_สีน้ำเงิน.jpg", "เสื้อโปโล_สีฟ้า.jpg", "เสื้อโปโล_สีม่วงเข้ม.jpg", "เสื้อโปโล_สีส้ม.jpg", "เสื้อโปโล_สีเขียวตอง.jpg", "เสื้อโปโล_สีเทาเข้ม.jpg", "เสื้อโปโล_สีเลือดหมู.jpg", "เสื้อโปโล_สีเหลืองจันทร์.jpg", "เสื้อโปโล_สีแดง.jpg"]}, "เสื้อโปโล / PS013-014 เอส ไลท์": {"path": "Poligan/เสื้อโปโล/PS013-014", "images": ["เสื้อโปโล_รูป Presentation.jpg", "เสื้อโปโล_สีกรมท่า.jpg", "เสื้อโปโล_สีกรมท่า_2.jpg", "เสื้อโปโล_สีกรมท่า_3.jpg", "เสื้อโปโล_สีขาว.jpg", "เสื้อโปโล_สีขาว_2.jpg", "เสื้อโปโล_สีขาว_3.jpg", "เสื้อโปโล_สีชมพู.jpg", "เสื้อโปโล_สีชมพู_2.jpg", "เสื้อโปโล_สีดำ.jpg", "เสื้อโปโล_สีดำ_2.jpg", "เสื้อโปโล_สีดำ_3.jpg", "เสื้อโปโล_สีฟ้า.jpg", "เสื้อโปโล_สีฟ้า_2.jpg", "เสื้อโปโล_สีม่วง.jpg", "เสื้อโปโล_สีม่วง_2.jpg", "เสื้อโปโล_สีส้ม.jpg", "เสื้อโปโล_สีส้ม_2.jpg", "เสื้อโปโล_สีส้ม_3.jpg", "เสื้อโปโล_สีเขียวหยก.jpg", "เสื้อโปโล_สีเขียวหยก_2.jpg", "เสื้อโปโล_สีเทา.jpg", "เสื้อโปโล_สีเลือดหมู.jpg", "เสื้อโปโล_สีเลือดหมู_2.jpg", "เสื้อโปโล_สีเลือดหมู_3.jpg", "เสื้อโปโล_สีเหลือง.jpg", "เสื้อโปโล_สีเหลือง_2.jpg", "เสื้อโปโล_สีเหลือง_3.jpg", "เสื้อโปโล_สีแดง.jpg", "เสื้อโปโล_สีแดง_2.jpg", "เสื้อโปโล_สีแดง_3.jpg"]}, "เสื้อโปโล / PS019 โปโลปกเชิ้ต": {"path": "Poligan/เสื้อโปโล/PS019", "images": ["เสื้อโปโล_รูป Presentation.jpg", "เสื้อโปโล_สีกรม.jpg", "เสื้อโปโล_สีขาว.jpg", "เสื้อโปโล_สีชมพูจุฬา.jpg", "เสื้อโปโล_สีดำ.jpg", "เสื้อโปโล_สีน้ำเงิน.jpg", "เสื้อโปโล_สีฟ้า.jpg", "เสื้อโปโล_สีม่วง.jpg", "เสื้อโปโล_สีเขียวเทอควอยซ์.jpg", "เสื้อโปโล_สีเทา.jpg", "เสื้อโปโล_สีเหลืองทอง.jpg"]}, "เสื้อโปโล / PS021 โปโลพิมพ์ลาย": {"path": "Poligan/เสื้อโปโล/เสื้อโปโล_พิมพ์ลาย_PS021", "images": ["เสื้อโปโล_รูป Presentation.jpg", "เสื้อโปโล_สีชมพู.jpg", "เสื้อโปโล_สีน้ำเงิน.jpg", "เสื้อโปโล_สีฟ้า.jpg", "เสื้อโปโล_สีส้ม.jpg", "เสื้อโปโล_สีเขียว.jpg", "เสื้อโปโล_สีเหลือง.jpg", "เสื้อโปโล_สีแดง.jpg"]}, "เสื้อโปโล / PS027 โปโลพิมพ์ลายไทย": {"path": "Poligan/เสื้อโปโล/เสื้อโปโล_พิมพ์ลาย_PS027", "images": ["เสื้อโปโล_รูป Presentation.jpg", "เสื้อโปโล_สีกรม.jpg", "เสื้อโปโล_สีกรม_2.jpg", "เสื้อโปโล_สีชมพู.jpg", "เสื้อโปโล_สีชมพู_2.jpg", "เสื้อโปโล_สีฟ้า.jpg", "เสื้อโปโล_สีฟ้า_2.jpg", "เสื้อโปโล_สีม่วง.jpg", "เสื้อโปโล_สีม่วง_2.jpg", "เสื้อโปโล_สีส้ม.jpg", "เสื้อโปโล_สีส้ม_2.jpg", "เสื้อโปโล_สีเขียว.jpg", "เสื้อโปโล_สีเขียว_2.jpg", "เสื้อโปโล_สีเหลือง.jpg", "เสื้อโปโล_สีเหลือง_2.jpg", "เสื้อโปโล_สีแดง.jpg", "เสื้อโปโล_สีแดง_2.jpg"]}, "เสื้อโปโล / PS029 โปโลปกเชิ้ตพาสเทล": {"path": "Poligan/เสื้อโปโล/PS029", "images": ["เสื้อโปโล_รูป Presentation.jpg", "เสื้อโปโล_สีกากี.jpg", "เสื้อโปโล_สีกากีอ่อน.jpg", "เสื้อโปโล_สีน้ำตาล.jpg", "เสื้อโปโล_สีฟ้า.jpg", "เสื้อโปโล_สีฟ้าคราม.jpg", "เสื้อโปโล_สีฟ้าอมเขียว.jpg", "เสื้อโปโล_สีเขียว.jpg", "เสื้อโปโล_สีเขียวขี้ม้า.jpg", "เสื้อโปโล_สีเทา.jpg", "เสื้อโปโล_สีเหลือง.jpg"]}, "เสื้อโปโล / PS031 โปโลไหล่สโลป พิมพ์ลายพราง": {"path": "Poligan/เสื้อโปโล/PS031", "images": ["เสื้อโปโล_รูป Presentation.jpg", "เสื้อโปโล_สีกรม.jpg", "เสื้อโปโล_สีชมพูดัสตี้พีช.jpg", "เสื้อโปโล_สีชมพูเบบี้พิงค์.jpg", "เสื้อโปโล_สีชาไทย.jpg", "เสื้อโปโล_สีน้ำเงิน.jpg", "เสื้อโปโล_สีฟ้า.jpg", "เสื้อโปโล_สีม่วง.jpg", "เสื้อโปโล_สีเขียว.jpg", "เสื้อโปโล_สีเทา.jpg", "เสื้อโปโล_สีเหลือง.jpg", "เสื้อโปโล_สีแดง.jpg"]}, "เสื้อยืด / แขนยาว BM003": {"path": "Poligan/Poligan/แขนยาว BM003", "images": ["cover.jpg"]}, "เสื้อยืด / แขนสั้น PG222 (Soft Flow ผ้านุ่ม)": {"path": "Poligan/Poligan/Soft Flow PG222 แขนสั้น ผ้านุ่ม", "images": ["274477_0.jpg", "274478_0.jpg", "274479_0.jpg", "274480_0.jpg", "274481_0.jpg", "274482_0.jpg", "274483_0.jpg", "274484_0.jpg", "274485_0.jpg", "274486_0.jpg", "274487_0.jpg", "274488_0.jpg", "274489_0.jpg", "274490_0.jpg", "274491_0.jpg", "277571_0.jpg", "cover.jpg", "ค่าสกรีน.jpg"]}, "เสื้อยืด / แขนสั้น กุ้นคอ PG111": {"path": "Poligan/Poligan/แขนสั้น กุ้นคอ PG111", "images": ["cover.jpg"]}}, "Portman": {"เสื้อกีฬา / เสื้อแขนกุด G6907": {"path": "Portman/เสื้อกีฬา/เสื้อแขนกุด G6907", "images": ["เสื้อแขนกุด_ดำ.jpg", "เสื้อแขนกุด_น้ำเงิน.jpg", "เสื้อแขนกุด_ปก.jpg", "เสื้อแขนกุด_เขียว.jpg"]}, "เสื้อกีฬา / PIM04": {"path": "Portman/เสื้อกีฬา/PIM04", "images": ["portman-pim-04-1-1024x1015.jpg", "portman-pim-04-10-1024x1015.jpg", "portman-pim-04-11-1024x1015.jpg", "portman-pim-04-12-1024x1015.jpg", "portman-pim-04-2-1024x1015.jpg", "portman-pim-04-3-1024x1015.jpg", "portman-pim-04-4-1024x1015.jpg", "portman-pim-04-5-724x1024.jpg", "portman-pim-04-6-1024x1015.jpg", "portman-pim-04-7-1024x1015.jpg", "portman-pim-04-8-1024x1015.jpg", "portman-pim-04-9-1024x1015.jpg"]}, "เสื้อกีฬา / PIM02": {"path": "Portman/เสื้อกีฬา/PIM02", "images": ["KID.jpg"]}}, "Warrix": {"Warrix": {"path": "Warrix", "images": ["S__30965947_0.jpg", "S__30965948_0.jpg", "S__30965949_0.jpg", "S__30965950_0.jpg", "S__30965951_0.jpg", "S__30965952_0.jpg", "S__30965953_0.jpg", "S__30965954_0.jpg", "S__30965955_0.jpg"]}, "Warrix (2)": {"path": "Warrix/Warrix", "images": ["17480.jpg", "246121_0.jpg", "435778.jpg", "S__30302260_0_0.jpg", "WA-252PLACL30_0.jpg", "WA-3315N new(1).jpg", "WA-3315N.jpg", "WA-3318N Catalog 20230831.jpg", "WA-3324.jpg"]}, "Warrix / Linex": {"path": "Warrix/Warrix/Linex", "images": ["S__32038967_0_0.jpg", "S__32038968_0_0.jpg", "S__32038969_0_0.jpg", "S__32038970_0_0.jpg", "S__32038972_0_0.jpg", "S__32038973_0_0.jpg", "S__32038974_0_0.jpg", "S__32038975_0_0.jpg", "S__32038976_0_0.jpg", "S__32038977_0.jpg", "S__32800771_0.jpg", "S__35610689_0.jpg", "S__35610690_0.jpg", "S__35610691_0.jpg", "S__35610692_0.jpg", "S__35725317_0_0.jpg", "S__35725318_0_0.jpg", "S__35725319_0_0.jpg"]}}, "กางเกงวอลเลยบอล": {"กางเกงวอลเลยบอล": {"path": "กางเกงวอลเลยบอล", "images": ["LINE_ALBUM_SPORT JERSEY 2026_260417_12.jpg"]}}, "หมวก": {"หมวกแก๊ป": {"path": "หมวก/หมวกแก๊ป", "images": ["Black_cap.jpg", "back_side_cap.jpg", "blue_cap.jpg", "cream_cap.jpg", "dark_blue_cap.jpg", "green_cap.jpg", "neon_green _cap.jpg", "orange_cap.jpg", "pink_cap.jpg", "red_cap.jpg", "white_cap.jpg", "yellow_cap.jpg"]}}, "เสื้อยืด ตะวัน": {"เสื้อยืด ตะวัน": {"path": "เสื้อยืด ตะวัน", "images": ["690147984_1590474603078152_3553705327967178709_n.jpg", "690760736_1590474639744815_264448506816318968_n.jpg", "701895027_1599018482223764_9221242873842411002_n.jpg", "702466139_1599018518890427_6597670434209625618_n.jpg", "710745442_1608506271274985_6191543381511417421_n.jpg", "720785103_1620658913393054_6500730054832426858_n.jpg", "752488815_1660899512702327_6036848580117574970_n.jpg", "771708843_1679159250876353_4490618310921427008_n.jpg", "S__43098146_0.jpg", "S__43098148_0.jpg", "S__43098149_0.jpg", "S__43098150_0.jpg", "S__43098151_0.jpg", "S__43098152_0.jpg", "S__43098153_0.jpg", "S__43098154_0.jpg", "S__43098155_0.jpg", "S__43098156_0.jpg", "S__43098157_0.jpg", "S__43098159_0.jpg", "S__43098160_0.jpg", "S__43098161_0.jpg", "S__43098162_0.jpg", "S__43098163_0.jpg", "S__43098164_0.jpg", "S__43098165_0.jpg", "S__43098166_0.jpg", "S__43098167_0.jpg", "S__43098168_0.jpg", "S__43098170_0.jpg", "S__43098171_0.jpg", "S__43098172_0.jpg", "S__43098173_0.jpg", "S__43098174_0.jpg", "S__43098175_0.jpg", "S__43098176_0.jpg", "S__43098177_0.jpg", "S__43098178_0.jpg", "S__43098179_0.jpg", "S__43098181_0.jpg", "S__43098182_0.jpg", "S__43098183_0.jpg", "S__43098184_0.jpg", "S__43098185_0.jpg", "S__43098186_0.jpg", "S__43098187_0.jpg", "S__43098188_0.jpg", "S__43098189_0.jpg", "S__43098190_0.jpg", "S__43098192_0.jpg", "S__43098193_0.jpg", "S__43098194_0.jpg", "S__43098195_0.jpg", "S__43098196_0.jpg", "S__43098197_0.jpg", "แคตตาล็อกเสื้อยืด_ตะวัน_หน้าเดียว.jpg"]}}, "แก้วน้ำ": {"แก้วน้ำ": {"path": "แก้วน้ำ", "images": ["S__83828859_0.jpg", "S__83828876_0.jpg", "S__83828884_0.jpg", "S__83828886_0.jpg", "S__83828887_0.jpg"]}, "cup 1": {"path": "แก้วน้ำ/cup 1", "images": ["1.JPG"]}, "select": {"path": "แก้วน้ำ/select", "images": ["S__83828862_0.jpg", "S__83828863_0.jpg", "S__83828864_0.jpg", "S__83828865_0.jpg", "S__83828866_0.jpg", "S__83828867_0.jpg", "S__83828868_0.jpg", "S__83828869_0.jpg", "S__83828870_0.jpg", "S__83828872_0.jpg", "S__83828873_0.jpg", "S__83828874_0.jpg", "S__83828875_0.jpg", "S__83828877_0.jpg", "S__83828878_0.jpg", "S__83828879_0.jpg", "S__83828880_0.jpg", "S__83828881_0.jpg", "S__83828883_0.jpg"]}}, "แบบสกรีนงานศพ": {"แบบสกรีนงานศพ": {"path": "แบบสกรีนงานศพ", "images": ["sample.jpg"]}}};
 
-            let totalProducts = 0, totalImages = 0;
+/* หมวดย่อยของแต่ละยี่ห้อ */
+const SUBGROUPS = { 'CPU': ['แขนสั้น','แขนยาว','แขนกุด'], 'Poligan': ['เสื้อโปโล','เสื้อยืด'] };
+const SUBLABEL = (cat, p) => cat === 'CPU' ? 'เสื้อกีฬา' + p : p;
 
-            Object.entries(galleryData).forEach(([categoryName, products]) => {
-                const pCount = Object.keys(products).length;
-                totalProducts += pCount;
+/* ---------- ข้อมูลแบบแบน ---------- */
+const enc = p => p.split('/').map(encodeURIComponent).join('/');
+const items = [];
+Object.entries(galleryData).forEach(([brand, products]) => {
+  const subOrder = SUBGROUPS[brand];
+  Object.entries(products).forEach(([key, info]) => {
+    if (!info.images || !info.images.length) return;
+    let sub = null, name = key;
+    if (subOrder) { const i = key.indexOf(' / '); if (i > 0) { sub = key.slice(0, i); name = key.slice(i + 3); } }
+    items.push({ brand, sub, name, urls: info.images.map(im => enc(info.path) + '/' + encodeURIComponent(im)) });
+  });
+});
+const brands = [...new Set(items.map(i => i.brand))];
+const byBrand = b => items.filter(i => i.brand === b);
+const totalImages = items.reduce((s, i) => s + i.urls.length, 0);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const slug = s => 's-' + s.replace(/[^a-zA-Z0-9ก-๙]/g, '_');
 
-                const navLink = document.createElement('a');
-                navLink.href = '#' + slug(categoryName);
-                navLink.textContent = categoryName + ' (' + pCount + ')';
-                nav.appendChild(navLink);
+const state = { brand: '', q: '' };
+const main = document.getElementById('main');
 
-                const categoryDiv = document.createElement('div');
-                categoryDiv.className = 'category';
-                categoryDiv.id = slug(categoryName);
+/* ---------- การ์ดสินค้า ---------- */
+function cardHTML(it, idx, showBrand) {
+  const tag = it.sub ? '<span class="tag">' + esc(SUBLABEL(it.brand, it.sub)) + '</span>' : '';
+  return '<button class="card" data-i="' + idx + '" aria-label="' + esc(it.brand + ' ' + it.name) + '">' +
+    '<div class="card-img"><img loading="lazy" src="' + it.urls[0] + '" alt="' + esc(it.brand + ' ' + it.name) + '">' + tag +
+    (it.urls.length > 1 ? '<span class="cnt">' + it.urls.length + ' รูป</span>' : '') + '</div>' +
+    '<div class="card-info">' + (showBrand ? '<div class="card-brand">' + esc(it.brand) + '</div>' : '') +
+    '<div class="card-name">' + esc(it.name) + '</div>' +
+    '<div class="card-meta">ดูทุกสี ' + it.urls.length + ' รูป</div></div></button>';
+}
+const lbTitleOf = it => it.brand + (it.sub ? ' ' + SUBLABEL(it.brand, it.sub) : '') + ' ' + it.name;
+const openItem = it => openLightbox(it.urls, lbTitleOf(it));
 
-                const categoryHeader = document.createElement('div');
-                categoryHeader.className = 'category-header';
-                categoryHeader.innerHTML = '<span>' + categoryName + '</span><span class="count">' + pCount + ' สินค้า</span>';
-                categoryDiv.appendChild(categoryHeader);
+/* ---------- เรนเดอร์หน้า ---------- */
+function render() {
+  const q = state.q.trim().toLowerCase();
+  let html = '';
+  if (q) {
+    const list = items.filter(i => (i.brand + ' ' + (i.sub || '') + ' ' + i.name).toLowerCase().includes(q) && (!state.brand || i.brand === state.brand));
+    html += '<section class="sec"><div class="sec-h"><h2>ผลการค้นหา</h2><p>"' + esc(state.q.trim()) + '" พบ ' + list.length + ' รุ่น</p></div>';
+    html += list.length ? '<div class="grid">' + list.map(i => cardHTML(i, items.indexOf(i), true)).join('') + '</div>'
+                        : '<div class="empty"><b>ไม่พบสินค้าที่ค้นหา</b>ลองใช้คำอื่น หรือเลือกดูตามยี่ห้อด้านบน</div>';
+    html += '</section>';
+  } else if (state.brand) {
+    html += brandSection(state.brand, false);
+  } else {
+    html += heroHTML() + perksHTML();
+    html += railHTML();
+    brands.forEach(b => { html += brandSection(b, true); });
+  }
+  main.innerHTML = html;
+  bindCards();
+  if (!q && !state.brand) initHero();
+  updateChips();
+}
 
-                const subOrder = SUBGROUPS[categoryName];
-                const groupMap = new Map();
-                Object.entries(products).forEach(([pn, info]) => {
-                    let prefix = null, disp = pn;
-                    if (subOrder) {
-                        const i = pn.indexOf(' / ');
-                        if (i > 0) { prefix = pn.slice(0, i); disp = pn.slice(i + 3); }
-                    }
-                    if (!groupMap.has(prefix)) groupMap.set(prefix, []);
-                    groupMap.get(prefix).push([pn, disp, info]);
-                });
-                const groupKeys = [...groupMap.keys()];
-                if (subOrder) {
-                    const rank = k => { const r = subOrder.indexOf(k); return r < 0 ? 99 : r; };
-                    groupKeys.sort((x, y) => rank(x) - rank(y));
-                }
+function brandSection(b, withLink) {
+  const list = byBrand(b), subOrder = SUBGROUPS[b];
+  let h = '<section class="sec" id="' + slug(b) + '"><div class="sec-h"><h2>' + esc(b.toUpperCase() === b ? b : b) + '</h2><p>' + list.length + ' รุ่น</p>';
+  if (withLink) h += '<a class="all" href="#" data-brand="' + esc(b) + '">ดูทั้งหมด</a>';
+  h += '</div>';
+  if (subOrder) {
+    const groups = subOrder.map(s => [s, list.filter(i => i.sub === s)]).filter(g => g[1].length);
+    const rest = list.filter(i => !subOrder.includes(i.sub));
+    if (groups.length > 1 && !withLink) {
+      h += '<div class="subnav">' + groups.map(g => '<a class="chip" href="#' + slug(b + '_' + g[0]) + '">' + esc(SUBLABEL(b, g[0])) + '<small>' + g[1].length + '</small></a>').join('') + '</div>';
+    }
+    groups.forEach(g => {
+      h += '<div class="subhead" id="' + slug(b + '_' + g[0]) + '"><h3>' + esc(SUBLABEL(b, g[0])) + '</h3><span>' + g[1].length + ' รุ่น</span></div>';
+      h += '<div class="grid">' + g[1].map(i => cardHTML(i, items.indexOf(i), false)).join('') + '</div>';
+    });
+    if (rest.length) h += '<div class="grid">' + rest.map(i => cardHTML(i, items.indexOf(i), false)).join('') + '</div>';
+  } else {
+    h += '<div class="grid">' + list.map(i => cardHTML(i, items.indexOf(i), false)).join('') + '</div>';
+  }
+  return h + '</section>';
+}
 
-                if (subOrder && groupKeys.length > 1) {
-                    const subNav = document.createElement('div');
-                    subNav.className = 'sub-nav';
-                    groupKeys.forEach(prefix => {
-                        const a = document.createElement('a');
-                        a.href = '#' + slug(categoryName + '_' + prefix);
-                        a.textContent = SUBLABEL(categoryName, prefix) + ' (' + groupMap.get(prefix).length + ')';
-                        subNav.appendChild(a);
-                    });
-                    categoryDiv.appendChild(subNav);
-                }
+/* รายการแนะนำ: อัปเดตล่าสุด (เสื้อโปโล Poligan) แบบเลื่อนซ้าย-ขวา */
+function railHTML() {
+  const feat = items.filter(i => i.brand === 'Poligan' && i.sub === 'เสื้อโปโล');
+  if (feat.length < 3) return '';
+  return '<section class="sec"><div class="sec-h"><h2>สินค้าอัปเดตล่าสุด</h2><p>เสื้อโปโล Poligan ชุดใหม่ ครบทุกสี</p></div>' +
+    '<div class="rail-wrap"><button class="rail-arrow l" id="railL" aria-label="ก่อนหน้า">&#10094;</button>' +
+    '<div class="rail" id="rail">' + feat.map(i => cardHTML(i, items.indexOf(i), true)).join('') + '</div>' +
+    '<button class="rail-arrow r" id="railR" aria-label="ถัดไป">&#10095;</button></div></section>';
+}
 
-                groupKeys.forEach(prefix => {
-                    if (prefix !== null) {
-                        const subHeader = document.createElement('div');
-                        subHeader.className = 'sub-header';
-                        subHeader.id = slug(categoryName + '_' + prefix);
-                        subHeader.innerHTML = '<span>' + SUBLABEL(categoryName, prefix) + '</span><span class="count">' + groupMap.get(prefix).length + ' รุ่น</span>';
-                        categoryDiv.appendChild(subHeader);
-                    }
+/* ---------- Hero ---------- */
+function heroSlides() {
+  const picks = brands.map(b => ({ b, list: byBrand(b) })).filter(x => x.list.length >= 3)
+                      .sort((a, c) => c.list.length - a.list.length).slice(0, 6);
+  return picks.map(({ b, list }) => {
+    const subs = SUBGROUPS[b] ? SUBGROUPS[b].filter(s => list.some(i => i.sub === s)).map(s => SUBLABEL(b, s)).join(' | ') : list.slice(0, 3).map(i => i.name).join(' | ');
+    const big = list[0], th = list.slice(1, 4);
+    return { b, subs, big, th };
+  });
+}
+function heroHTML() {
+  const s = heroSlides();
+  if (!s.length) return '';
+  return '<div class="hero"><div class="hero-view"><div class="hero-track" id="heroTrack">' + s.map(x =>
+    '<div class="slide"><div class="slide-big" data-open="' + items.indexOf(x.big) + '"><img src="' + x.big.urls[0] + '" alt="' + esc(x.b) + '"></div>' +
+    '<div class="slide-body"><div class="slide-title" data-brand="' + esc(x.b) + '">สำรวจ ' + esc(x.b.toUpperCase()) + '</div>' +
+    '<div class="slide-thumbs">' + x.th.map(t => '<a data-open="' + items.indexOf(t) + '"><img src="' + t.urls[0] + '" alt="' + esc(t.name) + '"></a>').join('') + '</div>' +
+    '<div class="slide-sub">' + esc(x.subs) + '</div></div></div>').join('') + '</div>' +
+    '<button class="hero-arrow l" id="heroL" aria-label="ก่อนหน้า">&#10094;</button><button class="hero-arrow r" id="heroR" aria-label="ถัดไป">&#10095;</button></div>' +
+    '<div class="dots" id="heroDots">' + s.map((_, i) => '<button data-d="' + i + '" aria-label="สไลด์ ' + (i + 1) + '"></button>').join('') + '</div></div>';
+}
+let heroTimer = null, heroIdx = 0;
+function initHero() {
+  const track = document.getElementById('heroTrack'); if (!track) return;
+  const n = track.children.length, dots = [...document.querySelectorAll('#heroDots button')];
+  const go = i => { heroIdx = (i + n) % n; track.style.transform = 'translateX(-' + heroIdx * 100 + '%)'; dots.forEach((d, k) => d.classList.toggle('on', k === heroIdx)); };
+  const auto = () => { clearInterval(heroTimer); heroTimer = setInterval(() => go(heroIdx + 1), 5500); };
+  document.getElementById('heroL').onclick = () => { go(heroIdx - 1); auto(); };
+  document.getElementById('heroR').onclick = () => { go(heroIdx + 1); auto(); };
+  dots.forEach((d, i) => d.onclick = () => { go(i); auto(); });
+  let sx = 0; const view = track.parentElement;
+  view.addEventListener('touchstart', e => { sx = e.changedTouches[0].screenX; }, { passive: true });
+  view.addEventListener('touchend', e => { const dx = e.changedTouches[0].screenX - sx; if (Math.abs(dx) > 40) { go(heroIdx + (dx < 0 ? 1 : -1)); auto(); } }, { passive: true });
+  go(0); auto();
+}
+function perksHTML() {
+  const ic = {
+    a: '<svg viewBox="0 0 48 48"><rect x="8" y="10" width="14" height="14" rx="2"/><rect x="26" y="10" width="14" height="14" rx="2"/><rect x="8" y="28" width="14" height="10" rx="2"/><rect x="26" y="28" width="14" height="10" rx="2"/></svg>',
+    b: '<svg viewBox="0 0 48 48"><path d="M6 14l18-8 18 8-18 8z"/><path d="M6 24l18 8 18-8M6 34l18 8 18-8"/></svg>',
+    c: '<svg viewBox="0 0 48 48"><rect x="6" y="10" width="36" height="28" rx="3"/><circle cx="17" cy="21" r="3.5"/><path d="M6 33l11-9 9 7 6-5 10 8"/></svg>'
+  };
+  return '<div class="perks"><div class="perks-in">' +
+    '<div class="perk">' + ic.a + '<div><b>' + brands.length + ' ยี่ห้อ</b>เลือกชมได้ทุกยี่ห้อ</div></div>' +
+    '<div class="perk">' + ic.b + '<div><b>' + items.length + ' รุ่น</b>เสื้อ หมวก แก้ว และอื่นๆ</div></div>' +
+    '<div class="perk">' + ic.c + '<div><b>' + totalImages + ' รูป</b>ดูได้ทุกสี ทุกแบบ</div></div></div></div>';
+}
 
-                    const productsGrid = document.createElement('div');
-                    productsGrid.className = 'products-grid';
+/* ---------- ตัวกรองยี่ห้อ / เมนู ---------- */
+function updateChips() {
+  document.querySelectorAll('#brandChips .chip').forEach(c => c.classList.toggle('on', c.dataset.brand === state.brand));
+  document.querySelectorAll('#drawerList button').forEach(c => c.classList.toggle('on', c.dataset.brand === state.brand));
+  document.querySelectorAll('.toptabs button').forEach(t => t.classList.toggle('on', t.dataset.tab === 'all' && !state.brand && !state.q));
+}
+function buildMenus() {
+  const chips = ['<button class="chip" data-brand="">ทั้งหมด<small>' + items.length + '</small></button>']
+    .concat(brands.map(b => '<button class="chip" data-brand="' + esc(b) + '">' + esc(b) + '<small>' + byBrand(b).length + '</small></button>'));
+  document.getElementById('brandChips').innerHTML = chips.join('');
+  document.getElementById('drawerList').innerHTML = ['<button data-brand=""><span>สินค้าทั้งหมด</span><em>' + items.length + ' รุ่น</em></button>']
+    .concat(brands.map(b => '<button data-brand="' + esc(b) + '"><span>' + esc(b) + '</span><em>' + byBrand(b).length + ' รุ่น</em></button>')).join('');
+}
+function setBrand(b, scroll) {
+  state.brand = b; state.q = ''; document.getElementById('q').value = '';
+  closeDrawer(); render();
+  if (scroll !== false) window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+const drawer = document.getElementById('drawer'), scrim = document.getElementById('scrim');
+function openDrawer() { drawer.classList.add('open'); scrim.classList.add('open'); drawer.setAttribute('aria-hidden', 'false'); }
+function closeDrawer() { drawer.classList.remove('open'); scrim.classList.remove('open'); drawer.setAttribute('aria-hidden', 'true'); }
 
-                    groupMap.get(prefix).forEach(([productName, displayName, info]) => {
-                        const lbName = prefix ? (categoryName + ' ' + prefix + ' ' + displayName) : productName;
-                        const images = info.images;
-                        const basePath = info.path;
-                        if (!images || images.length === 0) return;
-                        totalImages += images.length;
+/* ---------- เหตุการณ์ ---------- */
+function bindCards() {
+  main.querySelectorAll('.card').forEach(c => c.onclick = () => openItem(items[+c.dataset.i]));
+  main.querySelectorAll('[data-open]').forEach(c => c.onclick = () => openItem(items[+c.dataset.open]));
+  main.querySelectorAll('[data-brand]').forEach(c => c.onclick = e => { e.preventDefault(); setBrand(c.dataset.brand); });
+  main.querySelectorAll('.subnav a').forEach(a => a.onclick = e => { e.preventDefault(); const t = document.getElementById(a.getAttribute('href').slice(1)); if (t) t.scrollIntoView({ behavior: 'smooth' }); });
+  const rail = document.getElementById('rail');
+  if (rail) {
+    const step = () => rail.clientWidth * 0.8;
+    document.getElementById('railL').onclick = () => rail.scrollBy({ left: -step() });
+    document.getElementById('railR').onclick = () => rail.scrollBy({ left: step() });
+  }
+}
+document.getElementById('brandChips').addEventListener('click', e => { const c = e.target.closest('.chip'); if (c) setBrand(c.dataset.brand); });
+document.getElementById('drawerList').addEventListener('click', e => { const c = e.target.closest('button'); if (c) setBrand(c.dataset.brand); });
+document.getElementById('menuBtn').onclick = openDrawer;
+document.getElementById('drawerClose').onclick = closeDrawer;
+scrim.onclick = closeDrawer;
+document.querySelectorAll('.toptabs button').forEach(t => t.onclick = () => { if (t.dataset.tab === 'all') setBrand(''); else openDrawer(); });
+document.getElementById('logo').onclick = e => { e.preventDefault(); setBrand(''); };
+let qt = null;
+document.getElementById('q').addEventListener('input', e => {
+  clearTimeout(qt); qt = setTimeout(() => { state.q = e.target.value; if (state.q.trim()) state.brand = ''; render(); }, 180);
+});
 
-                        const fullPaths = images.map(img => basePath.split('/').map(encodeURIComponent).join('/') + '/' + encodeURIComponent(img));
+/* ---------- Lightbox ---------- */
+const lightbox = document.getElementById('lightbox'), lbImage = document.getElementById('lbImage'),
+      lbTitle = document.getElementById('lbTitle'), lbCounter = document.getElementById('lbCounter'), lbThumbs = document.getElementById('lbThumbs');
+let currentImages = [], currentIndex = 0, currentTitle = '';
+function openLightbox(images, title) { currentImages = images; currentIndex = 0; currentTitle = title; renderLightbox(); lightbox.classList.add('open'); document.body.classList.add('modal-open'); }
+function closeLightbox() { lightbox.classList.remove('open'); document.body.classList.remove('modal-open'); }
+function renderLightbox() {
+  lbImage.src = currentImages[currentIndex]; lbImage.alt = currentTitle; lbTitle.textContent = currentTitle;
+  lbCounter.textContent = (currentIndex + 1) + ' / ' + currentImages.length;
+  lbThumbs.innerHTML = '';
+  if (currentImages.length > 1) {
+    currentImages.forEach((src, i) => {
+      const t = document.createElement('img'); t.src = src; t.className = i === currentIndex ? 'active' : '';
+      t.onclick = e => { e.stopPropagation(); currentIndex = i; renderLightbox(); };
+      lbThumbs.appendChild(t);
+    });
+    const a = lbThumbs.children[currentIndex]; if (a) a.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  }
+}
+const lbNext = () => { currentIndex = (currentIndex + 1) % currentImages.length; renderLightbox(); };
+const lbPrev = () => { currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length; renderLightbox(); };
+document.getElementById('lbClose').onclick = closeLightbox;
+document.getElementById('lbNext').onclick = lbNext;
+document.getElementById('lbPrev').onclick = lbPrev;
+lightbox.addEventListener('click', e => { if (e.target === lightbox || e.target.id === 'lbMain') closeLightbox(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeDrawer(); }
+  if (!lightbox.classList.contains('open')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowRight') lbNext();
+  if (e.key === 'ArrowLeft') lbPrev();
+});
+let touchStartX = 0; const lbMain = document.getElementById('lbMain');
+lbMain.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+lbMain.addEventListener('touchend', e => { const dx = e.changedTouches[0].screenX - touchStartX; if (Math.abs(dx) > 40) { dx > 0 ? lbPrev() : lbNext(); } }, { passive: true });
 
-                        const productCard = document.createElement('div');
-                        productCard.className = 'product-card';
-                        productCard.onclick = () => openLightbox(fullPaths, lbName);
-
-                        const imagesDiv = document.createElement('div');
-                        imagesDiv.className = 'product-images';
-
-                        const imgElement = document.createElement('img');
-                        imgElement.src = fullPaths[0];
-                        imgElement.alt = lbName;
-                        imgElement.loading = 'lazy';
-                        imgElement.classList.add('active');
-                        imagesDiv.appendChild(imgElement);
-
-                        if (fullPaths.length > 1) {
-                            const hint = document.createElement('div');
-                            hint.className = 'click-hint';
-                            hint.textContent = fullPaths.length;
-                            imagesDiv.appendChild(hint);
-                        }
-
-                        productCard.appendChild(imagesDiv);
-
-                        const infoDiv = document.createElement('div');
-                        infoDiv.className = 'product-info';
-                        infoDiv.innerHTML = '<div class="product-name">' + displayName + '</div><div class="image-count">' + images.length + ' รูปภาพ</div>';
-                        productCard.appendChild(infoDiv);
-
-                        productsGrid.appendChild(productCard);
-                    });
-                    categoryDiv.appendChild(productsGrid);
-                });
-                gallery.appendChild(categoryDiv);
-            });
-
-            stats.innerHTML = '<span>' + Object.keys(galleryData).length + ' หมวดหมู่</span><span>' + totalProducts + ' สินค้า</span><span>' + totalImages + ' รูปภาพ</span>';
-        }
-
-        // ---- Lightbox ----
-        const lightbox = document.getElementById('lightbox');
-        const lbImage = document.getElementById('lbImage');
-        const lbTitle = document.getElementById('lbTitle');
-        const lbCounter = document.getElementById('lbCounter');
-        const lbThumbs = document.getElementById('lbThumbs');
-
-        function openLightbox(images, title) {
-            currentImages = images;
-            currentIndex = 0;
-            currentTitle = title;
-            renderLightbox();
-            lightbox.classList.add('open');
-            document.body.classList.add('modal-open');
-        }
-
-        function closeLightbox() {
-            lightbox.classList.remove('open');
-            document.body.classList.remove('modal-open');
-        }
-
-        function renderLightbox() {
-            lbImage.src = currentImages[currentIndex];
-            lbImage.alt = currentTitle;
-            lbTitle.textContent = currentTitle;
-            lbCounter.textContent = (currentIndex + 1) + ' / ' + currentImages.length;
-
-            lbThumbs.innerHTML = '';
-            if (currentImages.length > 1) {
-                currentImages.forEach((src, i) => {
-                    const t = document.createElement('img');
-                    t.src = src;
-                    t.className = i === currentIndex ? 'active' : '';
-                    t.onclick = (e) => { e.stopPropagation(); currentIndex = i; renderLightbox(); };
-                    lbThumbs.appendChild(t);
-                });
-                const activeThumb = lbThumbs.children[currentIndex];
-                if (activeThumb) activeThumb.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-            }
-        }
-
-        function lbNext() { currentIndex = (currentIndex + 1) % currentImages.length; renderLightbox(); }
-        function lbPrev() { currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length; renderLightbox(); }
-
-        document.getElementById('lbClose').onclick = closeLightbox;
-        document.getElementById('lbNext').onclick = lbNext;
-        document.getElementById('lbPrev').onclick = lbPrev;
-
-        lightbox.addEventListener('click', (e) => {
-            if (e.target === lightbox || e.target.id === 'lbMain') closeLightbox();
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (!lightbox.classList.contains('open')) return;
-            if (e.key === 'Escape') closeLightbox();
-            if (e.key === 'ArrowRight') lbNext();
-            if (e.key === 'ArrowLeft') lbPrev();
-        });
-
-        // Touch swipe support
-        let touchStartX = 0;
-        const lbMain = document.getElementById('lbMain');
-        lbMain.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
-        lbMain.addEventListener('touchend', (e) => {
-            const dx = e.changedTouches[0].screenX - touchStartX;
-            if (Math.abs(dx) > 40) { dx > 0 ? lbPrev() : lbNext(); }
-        }, { passive: true });
-
-        document.addEventListener('DOMContentLoaded', initGallery);
-    </script>
+buildMenus();
+render();
+</script>
 </body>
 </html>
